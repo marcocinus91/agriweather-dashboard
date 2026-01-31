@@ -6,6 +6,8 @@ import { useWeather } from "@/hooks/useWeather";
 import { Map } from "@/components/map/Map";
 import { WeatherCard } from "@/components/weather/WeatherCard";
 import { SearchCity } from "@/components/weather/SearchCity";
+import { TemperatureChart } from "@/components/charts/TemperatureChart";
+import { PrecipitationChart } from "@/components/charts/PrecipitationChart";
 import { Button } from "@/components/ui/button";
 import { GeocodingResult } from "@/lib/api/geocoding";
 
@@ -25,12 +27,10 @@ export function Dashboard() {
     requestPosition,
   } = useGeolocation();
 
-  // Città selezionata manualmente (sovrascrive geolocation)
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
     null,
   );
 
-  // Coordinate effettive da usare
   const latitude = selectedLocation?.latitude ?? geoLat;
   const longitude = selectedLocation?.longitude ?? geoLng;
   const locationName =
@@ -89,7 +89,7 @@ export function Dashboard() {
           </div>
         )}
 
-        {/* Se c'è una città selezionata, mostra bottone per tornare alla propria posizione */}
+        {/* Bottone torna alla posizione */}
         {selectedLocation && (
           <div className="mb-4">
             <Button
@@ -118,14 +118,19 @@ export function Dashboard() {
           )}
         </div>
 
-        {/* Placeholder grafici */}
+        {/* Grafici */}
         <div className="grid gap-4">
-          <div className="h-48 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400">
-            Grafico Temperature (Settimana 4)
-          </div>
-          <div className="h-48 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400">
-            Grafico Precipitazioni (Settimana 4)
-          </div>
+          {weatherLoading || !weather ? (
+            <>
+              <div className="h-64 bg-slate-100 rounded-lg animate-pulse"></div>
+              <div className="h-64 bg-slate-100 rounded-lg animate-pulse"></div>
+            </>
+          ) : (
+            <>
+              <TemperatureChart daily={weather.daily} />
+              <PrecipitationChart daily={weather.daily} />
+            </>
+          )}
         </div>
       </div>
     </div>
