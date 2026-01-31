@@ -2,20 +2,22 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { searchCities, GeocodingResult } from "@/lib/api/geocoding";
 
 interface SearchCityProps {
   onSelect: (city: GeocodingResult) => void;
+  onSave?: (city: GeocodingResult) => void;
+  isSaved?: (id: number) => boolean;
 }
 
-export function SearchCity({ onSelect }: SearchCityProps) {
+export function SearchCity({ onSelect, onSave, isSaved }: SearchCityProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<GeocodingResult[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Ricerca con debounce
   useEffect(() => {
     if (query.length < 2) {
       setResults([]);
@@ -39,7 +41,6 @@ export function SearchCity({ onSelect }: SearchCityProps) {
     return () => clearTimeout(timer);
   }, [query]);
 
-  // Chiudi dropdown cliccando fuori
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -61,6 +62,11 @@ export function SearchCity({ onSelect }: SearchCityProps) {
     setIsOpen(false);
   }
 
+  function handleSave(e: React.MouseEvent, city: GeocodingResult) {
+    e.stopPropagation();
+    onSave?.(city);
+  }
+
   return (
     <div ref={containerRef} className="relative">
       <Input
@@ -71,33 +77,43 @@ export function SearchCity({ onSelect }: SearchCityProps) {
         className="w-full"
       />
 
-      {/* Dropdown risultati */}
       {isOpen && results.length > 0 && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-lg shadow-lg z-50 overflow-hidden">
           {results.map((city) => (
-            <button
+            <div
               key={city.id}
+              className="flex items-center justify-between px-4 py-3 hover:bg-slate-100 border-b last:border-b-0 cursor-pointer"
               onClick={() => handleSelect(city)}
-              className="w-full px-4 py-3 text-left hover:bg-slate-100 border-b last:border-b-0"
             >
-              <p className="font-medium">{city.name}</p>
-              <p className="text-sm text-slate-500">
-                {city.admin1 && `${city.admin1}, `}
-                {city.country}
-              </p>
-            </button>
+              <div>
+                <p className="font-medium">{city.name}</p>
+                <p className="text-sm text-slate-500">
+                  {city.admin1 && `${city.admin1}, `}
+                  {city.country}
+                </p>
+              </div>
+              {onSave && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => handleSave(e, city)}
+                  disabled={isSaved?.(city.id)}
+                  className="ml-2"
+                >
+                  {isSaved?.(city.id) ? "✓" : "⭐"}
+                </Button>
+              )}
+            </div>
           ))}
         </div>
       )}
 
-      {/* Loading */}
       {loading && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-lg shadow-lg z-50 p-4 text-center text-slate-500">
           Ricerca in corso...
         </div>
       )}
 
-      {/* Nessun risultato */}
       {isOpen && !loading && query.length >= 2 && results.length === 0 && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-lg shadow-lg z-50 p-4 text-center text-slate-500">
           Nessuna città trovata

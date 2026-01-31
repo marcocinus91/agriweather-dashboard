@@ -3,9 +3,12 @@
 import { useState } from "react";
 import { useGeolocation, DEFAULT_COORDS } from "@/hooks/useGeolocation";
 import { useWeather } from "@/hooks/useWeather";
+import { useSavedCities, SavedCity } from "@/hooks/useSavedCities";
 import { Map } from "@/components/map/Map";
 import { WeatherCard } from "@/components/weather/WeatherCard";
 import { SearchCity } from "@/components/weather/SearchCity";
+import { FrostAlert } from "@/components/weather/FrostAlert";
+import { SavedCities } from "@/components/layout/SavedCities";
 import { TemperatureChart } from "@/components/charts/TemperatureChart";
 import { PrecipitationChart } from "@/components/charts/PrecipitationChart";
 import { Button } from "@/components/ui/button";
@@ -27,6 +30,7 @@ export function Dashboard() {
     requestPosition,
   } = useGeolocation();
 
+  const { cities, addCity, removeCity, isSaved } = useSavedCities();
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
     null,
   );
@@ -42,11 +46,21 @@ export function Dashboard() {
     longitude,
   );
 
-  function handleCitySelect(city: GeocodingResult) {
+  function handleCitySelect(city: GeocodingResult | SavedCity) {
     setSelectedLocation({
       latitude: city.latitude,
       longitude: city.longitude,
       name: city.name,
+    });
+  }
+
+  function handleSaveCity(city: GeocodingResult) {
+    addCity({
+      id: city.id,
+      name: city.name,
+      latitude: city.latitude,
+      longitude: city.longitude,
+      country: city.country,
     });
   }
 
@@ -66,7 +80,21 @@ export function Dashboard() {
       <div className="w-full lg:w-1/2 p-6 overflow-y-auto">
         {/* Ricerca città */}
         <div className="mb-4">
-          <SearchCity onSelect={handleCitySelect} />
+          <SearchCity
+            onSelect={handleCitySelect}
+            onSave={handleSaveCity}
+            isSaved={isSaved}
+          />
+        </div>
+
+        {/* Città salvate */}
+        <div className="mb-4">
+          <p className="text-sm text-slate-500 mb-2">Città salvate:</p>
+          <SavedCities
+            cities={cities}
+            onSelect={handleCitySelect}
+            onRemove={removeCity}
+          />
         </div>
 
         {/* Banner posizione */}
@@ -100,6 +128,13 @@ export function Dashboard() {
             >
               ← Torna alla mia posizione
             </Button>
+          </div>
+        )}
+
+        {/* Frost Alert */}
+        {weather && (
+          <div className="mb-4">
+            <FrostAlert daily={weather.daily} />
           </div>
         )}
 
