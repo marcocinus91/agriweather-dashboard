@@ -1,70 +1,87 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
+
+export const DEFAULT_COORDS = {
+  latitude: 39.2238,
+  longitude: 9.1217,
+  name: "Cagliari",
+} as const;
 
 interface GeolocationState {
-  latitude: number | null;
-  longitude: number | null;
+  latitude: number;
+  longitude: number;
   loading: boolean;
   error: string | null;
+  isUsingFallback: boolean;
 }
 
-// Coordinate di fallback: Cagliari
-const DEFAULT_LAT = 39.2238;
-const DEFAULT_LNG = 9.1217;
+function getErrorMessage(error: GeolocationPositionError): string {
+  switch (error.code) {
+    case error.PERMISSION_DENIED:
+      return "Permesso negato. Consenti l'accesso alla posizione nelle impostazioni del browser.";
+    case error.POSITION_UNAVAILABLE:
+      return "Posizione non disponibile. Verifica che il GPS sia attivo.";
+    case error.TIMEOUT:
+      return "Timeout nella richiesta. Riprova.";
+    default:
+      return "Errore sconosciuto nel rilevamento della posizione.";
+  }
+}
+
+function isGeolocationSupported(): boolean {
+  return typeof window !== "undefined" && "geolocation" in navigator;
+}
 
 export function useGeolocation() {
-  // Stato iniziale uguale per server e client per evitare hydration mismatch
+  // Parte con coordinate di default, niente loading iniziale
   const [state, setState] = useState<GeolocationState>({
-    latitude: null,
-    longitude: null,
-    loading: true,
+    latitude: DEFAULT_COORDS.latitude,
+    longitude: DEFAULT_COORDS.longitude,
+    loading: false,
     error: null,
+    isUsingFallback: true,
   });
 
-  useEffect(() => {
-    // Controlla il supporto geolocation solo sul client (dentro useEffect)
-    if (!navigator.geolocation) {
-      // Usa requestAnimationFrame per rendere la chiamata asincrona
-      // ed evitare il warning del React Compiler
-      requestAnimationFrame(() => {
-        setState({
-          latitude: DEFAULT_LAT,
-          longitude: DEFAULT_LNG,
-          loading: false,
-          error: "Geolocation non supportata",
-        });
-      });
+  // Funzione da chiamare su click utente
+  const requestPosition = useCallback(() => {
+    if (!isGeolocationSupported()) {
+      setState((prev) => ({
+        ...prev,
+        error: "Geolocation non supportata dal browser.",
+      }));
       return;
     }
 
+    setState((prev) => ({ ...prev, loading: true, error: null }));
+
     navigator.geolocation.getCurrentPosition(
-      // Successo
       (position) => {
         setState({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
           loading: false,
           error: null,
+          isUsingFallback: false,
         });
       },
-      // Errore
       (error) => {
-        setState({
-          latitude: DEFAULT_LAT,
-          longitude: DEFAULT_LNG,
+        setState((prev) => ({
+          ...prev,
           loading: false,
-          error: error.message,
-        });
+          error: getErrorMessage(error),
+        }));
       },
-      // Opzioni
       {
-        enableHighAccuracy: false,
-        timeout: 10000,
-        maximumAge: 300000, // Cache 5 minuti
+        enableHighAccuracy: true,
+        timeout: 30000,
+        maximumAge: 300000,
       },
     );
   }, []);
 
-  return state;
+  return {
+    ...state,
+    requestPosition,
+  };
 }

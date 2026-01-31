@@ -1,10 +1,10 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { LatLngExpression, Icon } from "leaflet";
+import { useEffect } from "react";
 import "leaflet/dist/leaflet.css";
 
-// Icona da CDN invece che da import locale
 const defaultIcon = new Icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   iconRetinaUrl:
@@ -15,6 +15,17 @@ const defaultIcon = new Icon({
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
 });
+
+// Componente che aggiorna la vista della mappa quando cambia il center
+function ChangeMapView({ center }: { center: LatLngExpression }) {
+  const map = useMap();
+
+  useEffect(() => {
+    map.setView(center);
+  }, [center, map]);
+
+  return null;
+}
 
 interface WeatherMapProps {
   center: LatLngExpression;
@@ -36,6 +47,7 @@ export function WeatherMap({ center, zoom = 10 }: WeatherMapProps) {
       <Marker position={center} icon={defaultIcon}>
         <Popup>Posizione selezionata</Popup>
       </Marker>
+      <ChangeMapView center={center} />
     </MapContainer>
   );
 }
