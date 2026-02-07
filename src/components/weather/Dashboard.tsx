@@ -70,16 +70,16 @@ export function Dashboard() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row h-[calc(100vh-64px)]">
+    <div className="flex flex-col lg:flex-row h-[calc(100vh-56px)]">
       {/* Mappa */}
-      <div className="w-full lg:w-1/2 h-[50vh] lg:h-full">
+      <div className="w-full lg:w-1/2 h-[40vh] lg:h-full">
         <Map center={[latitude, longitude]} zoom={9} />
       </div>
 
       {/* Dati meteo */}
-      <div className="w-full lg:w-1/2 p-6 overflow-y-auto">
+      <div className="w-full lg:w-1/2 p-4 sm:p-6 overflow-y-auto">
         {/* Ricerca città */}
-        <div className="mb-4">
+        <div className="mb-3">
           <SearchCity
             onSelect={handleCitySelect}
             onSave={handleSaveCity}
@@ -88,20 +88,21 @@ export function Dashboard() {
         </div>
 
         {/* Città salvate */}
-        <div className="mb-4">
-          <p className="text-sm text-slate-500 mb-2">Città salvate:</p>
-          <SavedCities
-            cities={cities}
-            onSelect={handleCitySelect}
-            onRemove={removeCity}
-          />
-        </div>
+        {cities.length > 0 && (
+          <div className="mb-4">
+            <SavedCities
+              cities={cities}
+              onSelect={handleCitySelect}
+              onRemove={removeCity}
+            />
+          </div>
+        )}
 
         {/* Banner posizione */}
         {isUsingFallback && !selectedLocation && (
-          <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="mb-4 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-sm text-blue-800 mb-2">
-              📍 Stai visualizzando il meteo di {DEFAULT_COORDS.name}
+              📍 Meteo di {DEFAULT_COORDS.name}
             </p>
             <Button
               onClick={handleUseMyPosition}
@@ -112,21 +113,22 @@ export function Dashboard() {
               {geoLoading ? "Rilevamento..." : "Usa la mia posizione"}
             </Button>
             {geoError && (
-              <p className="text-sm text-red-600 mt-2">⚠️ {geoError}</p>
+              <p className="text-xs text-red-600 mt-2">⚠️ {geoError}</p>
             )}
           </div>
         )}
 
         {/* Bottone torna alla posizione */}
         {selectedLocation && (
-          <div className="mb-4">
+          <div className="mb-3">
             <Button
               onClick={handleUseMyPosition}
               disabled={geoLoading}
               size="sm"
               variant="ghost"
+              className="text-sm h-8 px-2"
             >
-              ← Torna alla mia posizione
+              ← Mia posizione
             </Button>
           </div>
         )}
@@ -139,7 +141,7 @@ export function Dashboard() {
         )}
 
         {/* Weather Card */}
-        <div className="mb-6">
+        <div className="mb-4">
           {weatherLoading || !weather ? (
             <div className="p-6 bg-slate-100 rounded-lg animate-pulse">
               <div className="h-12 bg-slate-200 rounded w-32 mb-2"></div>
@@ -166,6 +168,11 @@ export function Dashboard() {
               <PrecipitationChart daily={weather.daily} />
             </>
           )}
+        </div>
+
+        {/* Footer */}
+        <div className="mt-6 pt-4 border-t text-center text-xs text-slate-400">
+          Dati meteo da Open-Meteo.com
         </div>
       </div>
     </div>

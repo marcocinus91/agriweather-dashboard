@@ -11,11 +11,10 @@ interface FrostDay {
 }
 
 export function FrostAlert({ daily }: FrostAlertProps) {
-  // Trova i giorni con rischio gelata (temp min < 2°C)
   const frostDays: FrostDay[] = daily.time
     .map((date, index) => ({
       date: new Date(date).toLocaleDateString("it-IT", {
-        weekday: "long",
+        weekday: "short",
         day: "numeric",
         month: "short",
       }),
@@ -23,32 +22,28 @@ export function FrostAlert({ daily }: FrostAlertProps) {
     }))
     .filter((day) => day.minTemp < 2);
 
-  // Nessun rischio gelata
   if (frostDays.length === 0) {
     return null;
   }
 
   return (
     <Card className="border-blue-300 bg-blue-50">
-      <CardContent className="pt-4">
+      <CardContent className="p-4">
         <div className="flex items-start gap-3">
-          <span className="text-2xl">🥶</span>
-          <div>
-            <p className="font-semibold text-blue-900">
+          <span className="text-xl sm:text-2xl">🥶</span>
+          <div className="min-w-0 flex-1">
+            <p className="font-semibold text-blue-900 text-sm sm:text-base">
               Attenzione: rischio gelate
-            </p>
-            <p className="text-sm text-blue-800 mt-1">
-              Temperature sotto i 2°C previste nei prossimi giorni:
             </p>
             <ul className="mt-2 space-y-1">
               {frostDays.map((day, index) => (
-                <li key={index} className="text-sm text-blue-800">
+                <li key={index} className="text-xs sm:text-sm text-blue-800">
                   • {day.date}:{" "}
                   <span className="font-medium">{day.minTemp}°C</span>
                 </li>
               ))}
             </ul>
-            <p className="text-xs text-blue-700 mt-3">
+            <p className="text-xs text-blue-700 mt-2">
               Proteggi le colture sensibili al gelo.
             </p>
           </div>
