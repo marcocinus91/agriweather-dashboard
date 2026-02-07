@@ -18,7 +18,6 @@ interface TemperatureChartProps {
 }
 
 export function TemperatureChart({ daily }: TemperatureChartProps) {
-  // Trasforma i dati per Recharts
   const data = daily.time.map((date, index) => ({
     date: new Date(date).toLocaleDateString("it-IT", {
       weekday: "short",
@@ -29,7 +28,7 @@ export function TemperatureChart({ daily }: TemperatureChartProps) {
   }));
 
   return (
-    <Card>
+    <Card className="dark:bg-slate-800 dark:border-slate-700">
       <CardHeader className="pb-2">
         <CardTitle className="text-base font-medium">
           🌡️ Temperature 7 giorni
@@ -42,10 +41,18 @@ export function TemperatureChart({ daily }: TemperatureChartProps) {
               data={data}
               margin={{ top: 5, right: 5, left: -20, bottom: 5 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="date" tick={{ fontSize: 12 }} tickLine={false} />
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#475569"
+                opacity={0.3}
+              />
+              <XAxis
+                dataKey="date"
+                tick={{ fontSize: 12, fill: "#94a3b8" }}
+                tickLine={false}
+              />
               <YAxis
-                tick={{ fontSize: 12 }}
+                tick={{ fontSize: 12, fill: "#94a3b8" }}
                 tickLine={false}
                 tickFormatter={(value) => `${value}°`}
               />
@@ -58,6 +65,7 @@ export function TemperatureChart({ daily }: TemperatureChartProps) {
                   borderRadius: "8px",
                   border: "1px solid #e2e8f0",
                   fontSize: "14px",
+                  backgroundColor: "#fff",
                 }}
               />
               <Legend

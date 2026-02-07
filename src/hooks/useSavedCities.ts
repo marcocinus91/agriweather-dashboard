@@ -13,24 +13,21 @@ export interface SavedCity {
 const STORAGE_KEY = "agriweather-saved-cities";
 const MAX_CITIES = 5;
 
-// Funzione per leggere da localStorage (solo client-side)
-function getStoredCities(): SavedCity[] {
-  if (typeof window === "undefined") return [];
-
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored) {
-    try {
-      return JSON.parse(stored);
-    } catch {
-      console.error("Errore parsing città salvate");
-    }
-  }
-  return [];
-}
-
 export function useSavedCities() {
-  // Inizializzazione lazy: legge da localStorage solo al primo render
-  const [cities, setCities] = useState<SavedCity[]>(getStoredCities);
+  // Lazy initialization: carica da localStorage al primo render
+  const [cities, setCities] = useState<SavedCity[]>(() => {
+    if (typeof window === "undefined") return [];
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch {
+        console.error("Errore parsing città salvate");
+        return [];
+      }
+    }
+    return [];
+  });
 
   // Salva in localStorage quando cambiano
   useEffect(() => {
@@ -54,12 +51,9 @@ export function useSavedCities() {
     setCities((prev) => prev.filter((c) => c.id !== id));
   }, []);
 
-  const isSaved = useCallback(
-    (id: number) => {
-      return cities.some((c) => c.id === id);
-    },
-    [cities],
-  );
+  const isSaved = (id: number) => {
+    return cities.some((c) => c.id === id);
+  };
 
   return {
     cities,

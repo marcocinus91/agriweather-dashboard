@@ -77,7 +77,7 @@ export function Dashboard() {
       </div>
 
       {/* Dati meteo */}
-      <div className="w-full lg:w-1/2 p-4 sm:p-6 overflow-y-auto">
+      <div className="w-full lg:w-1/2 p-4 sm:p-6 overflow-y-auto bg-white dark:bg-slate-900">
         {/* Ricerca città */}
         <div className="mb-3">
           <SearchCity
@@ -100,8 +100,8 @@ export function Dashboard() {
 
         {/* Banner posizione */}
         {isUsingFallback && !selectedLocation && (
-          <div className="mb-4 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-800 mb-2">
+          <div className="mb-4 p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg">
+            <p className="text-sm text-blue-800 dark:text-blue-200 mb-2">
               📍 Meteo di {DEFAULT_COORDS.name}
             </p>
             <Button
@@ -113,7 +113,9 @@ export function Dashboard() {
               {geoLoading ? "Rilevamento..." : "Usa la mia posizione"}
             </Button>
             {geoError && (
-              <p className="text-xs text-red-600 mt-2">⚠️ {geoError}</p>
+              <p className="text-xs text-red-600 dark:text-red-400 mt-2">
+                ⚠️ {geoError}
+              </p>
             )}
           </div>
         )}
@@ -143,9 +145,9 @@ export function Dashboard() {
         {/* Weather Card */}
         <div className="mb-4">
           {weatherLoading || !weather ? (
-            <div className="p-6 bg-slate-100 rounded-lg animate-pulse">
-              <div className="h-12 bg-slate-200 rounded w-32 mb-2"></div>
-              <div className="h-4 bg-slate-200 rounded w-24"></div>
+            <div className="p-6 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse">
+              <div className="h-12 bg-slate-200 dark:bg-slate-700 rounded w-32 mb-2"></div>
+              <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-24"></div>
             </div>
           ) : (
             <WeatherCard
@@ -159,8 +161,8 @@ export function Dashboard() {
         <div className="grid gap-4">
           {weatherLoading || !weather ? (
             <>
-              <div className="h-64 bg-slate-100 rounded-lg animate-pulse"></div>
-              <div className="h-64 bg-slate-100 rounded-lg animate-pulse"></div>
+              <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
+              <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
             </>
           ) : (
             <>
@@ -171,7 +173,7 @@ export function Dashboard() {
         </div>
 
         {/* Footer */}
-        <div className="mt-6 pt-4 border-t text-center text-xs text-slate-400">
+        <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700 text-center text-xs text-slate-400">
           Dati meteo da Open-Meteo.com
         </div>
       </div>

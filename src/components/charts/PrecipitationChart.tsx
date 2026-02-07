@@ -25,11 +25,10 @@ export function PrecipitationChart({ daily }: PrecipitationChartProps) {
     precipitazioni: daily.precipitation_sum[index],
   }));
 
-  // Controlla se ci sono precipitazioni
   const hasPrecipitation = data.some((d) => d.precipitazioni > 0);
 
   return (
-    <Card>
+    <Card className="dark:bg-slate-800 dark:border-slate-700">
       <CardHeader className="pb-2">
         <CardTitle className="text-base font-medium">
           💧 Precipitazioni 7 giorni
@@ -43,14 +42,18 @@ export function PrecipitationChart({ daily }: PrecipitationChartProps) {
                 data={data}
                 margin={{ top: 5, right: 5, left: -20, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="#475569"
+                  opacity={0.3}
+                />
                 <XAxis
                   dataKey="date"
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 12, fill: "#94a3b8" }}
                   tickLine={false}
                 />
                 <YAxis
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 12, fill: "#94a3b8" }}
                   tickLine={false}
                   tickFormatter={(value) => `${value}mm`}
                 />
@@ -63,6 +66,7 @@ export function PrecipitationChart({ daily }: PrecipitationChartProps) {
                     borderRadius: "8px",
                     border: "1px solid #e2e8f0",
                     fontSize: "14px",
+                    backgroundColor: "#fff",
                   }}
                 />
                 <Bar

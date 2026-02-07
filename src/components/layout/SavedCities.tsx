@@ -19,18 +19,18 @@ export function SavedCities({ cities, onSelect, onRemove }: SavedCitiesProps) {
       {cities.map((city) => (
         <div
           key={city.id}
-          className="flex items-center gap-1 bg-slate-100 rounded-full pl-3 pr-1 py-1 text-sm"
+          className="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 rounded-full pl-3 pr-1 py-1 text-sm"
         >
           <button
             onClick={() => onSelect(city)}
-            className="hover:text-blue-600 max-w-30 truncate"
+            className="hover:text-blue-600 dark:hover:text-blue-400 max-w-30 truncate"
           >
             {city.name}
           </button>
           <Button
             variant="ghost"
             size="sm"
-            className="h-5 w-5 p-0 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-600"
+            className="h-5 w-5 p-0 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
             onClick={() => onRemove(city.id)}
           >
             ×

@@ -74,20 +74,20 @@ export function SearchCity({ onSelect, onSave, isSaved }: SearchCityProps) {
         placeholder="Cerca città..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full"
+        className="w-full dark:bg-slate-800 dark:border-slate-600"
       />
 
       {isOpen && results.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-lg shadow-lg z-50 overflow-hidden">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg shadow-lg z-50 overflow-hidden">
           {results.map((city) => (
             <div
               key={city.id}
-              className="flex items-center justify-between px-4 py-3 hover:bg-slate-100 border-b last:border-b-0 cursor-pointer"
+              className="flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-700 border-b dark:border-slate-700 last:border-b-0 cursor-pointer"
               onClick={() => handleSelect(city)}
             >
               <div>
                 <p className="font-medium">{city.name}</p>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
                   {city.admin1 && `${city.admin1}, `}
                   {city.country}
                 </p>
@@ -109,13 +109,13 @@ export function SearchCity({ onSelect, onSave, isSaved }: SearchCityProps) {
       )}
 
       {loading && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-lg shadow-lg z-50 p-4 text-center text-slate-500">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg shadow-lg z-50 p-4 text-center text-slate-500 dark:text-slate-400">
           Ricerca in corso...
         </div>
       )}
 
       {isOpen && !loading && query.length >= 2 && results.length === 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-lg shadow-lg z-50 p-4 text-center text-slate-500">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg shadow-lg z-50 p-4 text-center text-slate-500 dark:text-slate-400">
           Nessuna città trovata
         </div>
       )}
