@@ -8,6 +8,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "AgriWeather Dashboard",
   description: "Dashboard meteo per agricoltori",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
