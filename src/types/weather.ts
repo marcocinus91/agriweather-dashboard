@@ -12,6 +12,7 @@ export interface DailyWeather {
   precipitation_sum: number[];
   sunrise: string[];
   sunset: string[];
+  et0_fao_evapotranspiration: number[];
 }
 
 export interface HourlyWeather {

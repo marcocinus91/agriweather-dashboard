@@ -11,6 +11,7 @@ import { FrostAlert } from "@/components/weather/FrostAlert";
 import { SavedCities } from "@/components/layout/SavedCities";
 import { TemperatureChart } from "@/components/charts/TemperatureChart";
 import { PrecipitationChart } from "@/components/charts/PrecipitationChart";
+import { EvapotranspirationCard } from "@/components/weather/EvapotranspirationCard";
 import { Button } from "@/components/ui/button";
 import { GeocodingResult } from "@/lib/api/geocoding";
 
@@ -154,6 +155,15 @@ export function Dashboard() {
               current={weather.current}
               locationName={locationName}
             />
+          )}
+        </div>
+
+        {/* Evapotraspirazione */}
+        <div className="mb-4">
+          {weatherLoading || !weather ? (
+            <div className="h-40 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
+          ) : (
+            <EvapotranspirationCard daily={weather.daily} />
           )}
         </div>
 

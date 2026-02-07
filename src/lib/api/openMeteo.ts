@@ -12,7 +12,7 @@ export async function getWeatherData(
     current: "temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m",
     hourly: "temperature_2m,precipitation_probability,precipitation",
     daily:
-      "temperature_2m_max,temperature_2m_min,precipitation_sum,sunrise,sunset",
+      "temperature_2m_max,temperature_2m_min,precipitation_sum,sunrise,sunset,et0_fao_evapotranspiration",
     timezone: "auto",
   });
 
