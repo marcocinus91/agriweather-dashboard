@@ -14,6 +14,7 @@ import { PrecipitationChart } from "@/components/charts/PrecipitationChart";
 import { EvapotranspirationCard } from "@/components/weather/EvapotranspirationCard";
 import { Button } from "@/components/ui/button";
 import { GeocodingResult } from "@/lib/api/geocoding";
+import { EvapotranspirationChart } from "../charts/EvapotranspirationChart";
 
 interface Location {
   latitude: number;
@@ -173,11 +174,13 @@ export function Dashboard() {
             <>
               <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
               <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
+              <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
             </>
           ) : (
             <>
               <TemperatureChart daily={weather.daily} />
               <PrecipitationChart daily={weather.daily} />
+              <EvapotranspirationChart daily={weather.daily} />
             </>
           )}
         </div>
