@@ -15,6 +15,7 @@ import { EvapotranspirationCard } from "@/components/weather/EvapotranspirationC
 import { Button } from "@/components/ui/button";
 import { GeocodingResult } from "@/lib/api/geocoding";
 import { EvapotranspirationChart } from "../charts/EvapotranspirationChart";
+import { WindAlert } from "./WindAlert";
 
 interface Location {
   latitude: number;
@@ -141,6 +142,13 @@ export function Dashboard() {
         {weather && (
           <div className="mb-4">
             <FrostAlert daily={weather.daily} />
+          </div>
+        )}
+
+        {/* Wind Alert */}
+        {weather && (
+          <div className="mb-4">
+            <WindAlert daily={weather.daily} />
           </div>
         )}
 
