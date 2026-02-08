@@ -14,6 +14,7 @@ export interface DailyWeather {
   sunset: string[];
   et0_fao_evapotranspiration: number[];
   wind_speed_10m_max: number[];
+  sunshine_duration: number[];
 }
 
 export interface HourlyWeather {
