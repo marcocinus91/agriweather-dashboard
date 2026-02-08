@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { GeocodingResult } from "@/lib/api/geocoding";
 import { EvapotranspirationChart } from "../charts/EvapotranspirationChart";
 import { WindAlert } from "./WindAlert";
+import { GrowingDegreeDays } from "./GrowingDegreeDays";
 
 interface Location {
   latitude: number;
@@ -173,6 +174,15 @@ export function Dashboard() {
             <div className="h-40 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
           ) : (
             <EvapotranspirationCard daily={weather.daily} />
+          )}
+        </div>
+
+        {/* Gradi Giorno */}
+        <div className="mb-4">
+          {weatherLoading || !weather ? (
+            <div className="h-48 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
+          ) : (
+            <GrowingDegreeDays daily={weather.daily} />
           )}
         </div>
 
