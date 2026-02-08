@@ -17,6 +17,7 @@ import { GeocodingResult } from "@/lib/api/geocoding";
 import { EvapotranspirationChart } from "../charts/EvapotranspirationChart";
 import { WindAlert } from "./WindAlert";
 import { GrowingDegreeDays } from "./GrowingDegreeDays";
+import { SprayWindows } from "./SprayWindows";
 
 interface Location {
   latitude: number;
@@ -183,6 +184,15 @@ export function Dashboard() {
             <div className="h-48 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
           ) : (
             <GrowingDegreeDays daily={weather.daily} />
+          )}
+        </div>
+
+        {/* Spray Windows */}
+        <div className="mb-4">
+          {weatherLoading || !weather ? (
+            <div className="h-48 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
+          ) : (
+            <SprayWindows hourly={weather.hourly} />
           )}
         </div>
 

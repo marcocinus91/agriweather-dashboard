@@ -21,6 +21,8 @@ export interface HourlyWeather {
   temperature_2m: number[];
   precipitation_probability: number[];
   precipitation: number[];
+  wind_speed_10m: number[];
+  relative_humidity_2m: number[];
 }
 
 export interface WeatherResponse {

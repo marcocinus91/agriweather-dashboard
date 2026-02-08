@@ -10,7 +10,8 @@ export async function getWeatherData(
     latitude: latitude.toString(),
     longitude: longitude.toString(),
     current: "temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m",
-    hourly: "temperature_2m,precipitation_probability,precipitation",
+    hourly:
+      "temperature_2m,precipitation_probability,precipitation,wind_speed_10m,relative_humidity_2m",
     daily:
       "temperature_2m_max,temperature_2m_min,precipitation_sum,sunrise,sunset,et0_fao_evapotranspiration,wind_speed_10m_max",
     timezone: "auto",
