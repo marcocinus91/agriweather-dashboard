@@ -20,6 +20,7 @@ import { GrowingDegreeDays } from "./GrowingDegreeDays";
 import { SprayWindows } from "./SprayWindows";
 import { SunshineCard } from "./SunshineCard";
 import { DiseaseRiskCard } from "./DiseaseRiskCard";
+import { ChillingHoursCard } from "./ChillingHoursCard";
 
 interface Location {
   latitude: number;
@@ -213,6 +214,15 @@ export function Dashboard() {
             <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
           ) : (
             <DiseaseRiskCard hourly={weather.hourly} />
+          )}
+        </div>
+
+        {/* Ore di Freddo */}
+        <div className="mb-4">
+          {weatherLoading || !weather ? (
+            <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
+          ) : (
+            <ChillingHoursCard hourly={weather.hourly} />
           )}
         </div>
 
