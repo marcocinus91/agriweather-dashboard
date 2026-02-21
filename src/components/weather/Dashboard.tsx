@@ -19,6 +19,7 @@ import { WindAlert } from "./WindAlert";
 import { GrowingDegreeDays } from "./GrowingDegreeDays";
 import { SprayWindows } from "./SprayWindows";
 import { SunshineCard } from "./SunshineCard";
+import { DiseaseRiskCard } from "./DiseaseRiskCard";
 
 interface Location {
   latitude: number;
@@ -203,6 +204,15 @@ export function Dashboard() {
             <div className="h-48 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
           ) : (
             <SunshineCard daily={weather.daily} />
+          )}
+        </div>
+
+        {/* Rischio Malattie */}
+        <div className="mb-4">
+          {weatherLoading || !weather ? (
+            <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
+          ) : (
+            <DiseaseRiskCard hourly={weather.hourly} />
           )}
         </div>
 

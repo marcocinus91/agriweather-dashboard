@@ -24,6 +24,7 @@ export interface HourlyWeather {
   precipitation: number[];
   wind_speed_10m: number[];
   relative_humidity_2m: number[];
+  dew_point_2m: number[];
 }
 
 export interface WeatherResponse {
