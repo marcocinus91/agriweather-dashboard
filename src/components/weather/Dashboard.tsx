@@ -21,6 +21,7 @@ import { SprayWindows } from "./SprayWindows";
 import { SunshineCard } from "./SunshineCard";
 import { DiseaseRiskCard } from "./DiseaseRiskCard";
 import { ChillingHoursCard } from "./ChillingHoursCard";
+import { NowcastingCard } from "./NowcastingCard";
 
 interface Location {
   latitude: number;
@@ -170,6 +171,11 @@ export function Dashboard() {
               locationName={locationName}
             />
           )}
+        </div>
+
+        {/* Nowcasting */}
+        <div className="mb-4">
+          <NowcastingCard latitude={latitude} longitude={longitude} />
         </div>
 
         {/* Evapotraspirazione */}
