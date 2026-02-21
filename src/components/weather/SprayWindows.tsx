@@ -2,6 +2,15 @@
 
 import { HourlyWeather } from "@/types/weather";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Tractor,
+  Wind,
+  CloudRain,
+  Thermometer,
+  Droplets,
+  Check,
+  X,
+} from "lucide-react";
 
 interface SprayWindowsProps {
   hourly: HourlyWeather;
@@ -18,15 +27,14 @@ interface HourCondition {
   issues: string[];
 }
 
-// Soglie per trattamenti
 const THRESHOLDS = {
-  maxWind: 15, // km/h
-  maxPrecipitation: 0.1, // mm
-  maxPrecipitationProbability: 30, // %
-  minTemperature: 5, // °C
-  maxTemperature: 30, // °C
-  minHumidity: 40, // %
-  maxHumidity: 90, // %
+  maxWind: 15,
+  maxPrecipitation: 0.1,
+  maxPrecipitationProbability: 30,
+  minTemperature: 5,
+  maxTemperature: 30,
+  minHumidity: 40,
+  maxHumidity: 90,
 };
 
 function evaluateHour(
@@ -76,7 +84,6 @@ function evaluateHour(
 export function SprayWindows({ hourly }: SprayWindowsProps) {
   const now = new Date();
 
-  // Analizza le prossime 48 ore
   const conditions: HourCondition[] = hourly.time
     .map((time, index) =>
       evaluateHour(
@@ -91,7 +98,6 @@ export function SprayWindows({ hourly }: SprayWindowsProps) {
     .filter((c) => c.time > now)
     .slice(0, 48);
 
-  // Trova finestre buone consecutive (almeno 2 ore)
   const goodWindows: { start: Date; end: Date; hours: number }[] = [];
   let windowStart: Date | null = null;
   let windowHours = 0;
@@ -117,7 +123,6 @@ export function SprayWindows({ hourly }: SprayWindowsProps) {
     }
   });
 
-  // Chiudi l'ultima finestra se ancora aperta
   if (windowStart && windowHours >= 2) {
     goodWindows.push({
       start: windowStart,
@@ -126,7 +131,6 @@ export function SprayWindows({ hourly }: SprayWindowsProps) {
     });
   }
 
-  // Prossime 12 ore per visualizzazione dettagliata
   const next12Hours = conditions.slice(0, 12);
 
   const formatTime = (date: Date) =>
@@ -138,16 +142,18 @@ export function SprayWindows({ hourly }: SprayWindowsProps) {
   return (
     <Card className="dark:bg-slate-800 dark:border-slate-700">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-medium">
-          🚜 Finestre di Trattamento
+        <CardTitle className="text-base font-medium flex items-center gap-2">
+          <Tractor className="h-5 w-5 text-amber-600" />
+          Finestre di Trattamento
         </CardTitle>
       </CardHeader>
       <CardContent>
         {/* Finestre consigliate */}
         {goodWindows.length > 0 ? (
           <div className="mb-4">
-            <p className="text-sm font-medium text-green-600 dark:text-green-400 mb-2">
-              ✅ Finestre consigliate (prossime 48h):
+            <p className="text-sm font-medium text-green-600 dark:text-green-400 mb-2 flex items-center gap-1">
+              <Check className="h-4 w-4" />
+              Finestre consigliate (prossime 48h):
             </p>
             <div className="space-y-2">
               {goodWindows.slice(0, 3).map((window, index) => (
@@ -168,8 +174,9 @@ export function SprayWindows({ hourly }: SprayWindowsProps) {
           </div>
         ) : (
           <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-lg">
-            <p className="text-sm text-red-700 dark:text-red-300">
-              ⚠️ Nessuna finestra ideale nelle prossime 48 ore
+            <p className="text-sm text-red-700 dark:text-red-300 flex items-center gap-1">
+              <X className="h-4 w-4" />
+              Nessuna finestra ideale nelle prossime 48 ore
             </p>
           </div>
         )}
@@ -192,24 +199,36 @@ export function SprayWindows({ hourly }: SprayWindowsProps) {
               <div className="font-medium">
                 {formatTime(hour.time).slice(0, 2)}
               </div>
-              <div>{hour.isGood ? "✓" : "✗"}</div>
+              <div>
+                {hour.isGood ? (
+                  <Check className="h-3 w-3 mx-auto" />
+                ) : (
+                  <X className="h-3 w-3 mx-auto" />
+                )}
+              </div>
             </div>
           ))}
         </div>
 
         {/* Soglie */}
         <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700">
-          <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
             Condizioni ideali:
           </p>
-          <div className="flex flex-wrap gap-2 text-xs text-slate-600 dark:text-slate-400">
-            <span>💨 Vento &lt;{THRESHOLDS.maxWind} km/h</span>
-            <span>🌧️ No pioggia</span>
-            <span>
-              🌡️ {THRESHOLDS.minTemperature}-{THRESHOLDS.maxTemperature}°C
+          <div className="flex flex-wrap gap-3 text-xs text-slate-600 dark:text-slate-400">
+            <span className="flex items-center gap-1">
+              <Wind className="h-3 w-3" /> &lt;{THRESHOLDS.maxWind} km/h
             </span>
-            <span>
-              💧 Umidità {THRESHOLDS.minHumidity}-{THRESHOLDS.maxHumidity}%
+            <span className="flex items-center gap-1">
+              <CloudRain className="h-3 w-3" /> No pioggia
+            </span>
+            <span className="flex items-center gap-1">
+              <Thermometer className="h-3 w-3" /> {THRESHOLDS.minTemperature}-
+              {THRESHOLDS.maxTemperature}°C
+            </span>
+            <span className="flex items-center gap-1">
+              <Droplets className="h-3 w-3" /> {THRESHOLDS.minHumidity}-
+              {THRESHOLDS.maxHumidity}%
             </span>
           </div>
         </div>

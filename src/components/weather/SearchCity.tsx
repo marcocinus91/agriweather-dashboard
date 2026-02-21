@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { searchCities, GeocodingResult } from "@/lib/api/geocoding";
+import { Search, Star, Check, Loader2 } from "lucide-react";
 
 interface SearchCityProps {
   onSelect: (city: GeocodingResult) => void;
@@ -69,13 +70,19 @@ export function SearchCity({ onSelect, onSave, isSaved }: SearchCityProps) {
 
   return (
     <div ref={containerRef} className="relative">
-      <Input
-        type="text"
-        placeholder="Cerca città..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="w-full dark:bg-slate-800 dark:border-slate-600"
-      />
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <Input
+          type="text"
+          placeholder="Cerca città..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="w-full pl-10 dark:bg-slate-800 dark:border-slate-600"
+        />
+        {loading && (
+          <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 animate-spin" />
+        )}
+      </div>
 
       {isOpen && results.length > 0 && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg shadow-lg z-50 overflow-hidden">
@@ -100,17 +107,15 @@ export function SearchCity({ onSelect, onSave, isSaved }: SearchCityProps) {
                   disabled={isSaved?.(city.id)}
                   className="ml-2"
                 >
-                  {isSaved?.(city.id) ? "✓" : "⭐"}
+                  {isSaved?.(city.id) ? (
+                    <Check className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <Star className="h-4 w-4" />
+                  )}
                 </Button>
               )}
             </div>
           ))}
-        </div>
-      )}
-
-      {loading && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-lg shadow-lg z-50 p-4 text-center text-slate-500 dark:text-slate-400">
-          Ricerca in corso...
         </div>
       )}
 

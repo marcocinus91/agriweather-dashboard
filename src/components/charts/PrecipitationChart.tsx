@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { DailyWeather } from "@/types/weather";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CloudRain, Sun } from "lucide-react";
 
 interface PrecipitationChartProps {
   daily: DailyWeather;
@@ -30,8 +31,9 @@ export function PrecipitationChart({ daily }: PrecipitationChartProps) {
   return (
     <Card className="dark:bg-slate-800 dark:border-slate-700">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-medium">
-          💧 Precipitazioni 7 giorni
+        <CardTitle className="text-base font-medium flex items-center gap-2">
+          <CloudRain className="h-5 w-5 text-blue-500" />
+          Precipitazioni 7 giorni
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -78,7 +80,8 @@ export function PrecipitationChart({ daily }: PrecipitationChartProps) {
             </ResponsiveContainer>
           ) : (
             <div className="h-full flex items-center justify-center text-slate-400">
-              ☀️ Nessuna precipitazione prevista
+              <Sun className="h-5 w-5 mr-2" />
+              Nessuna precipitazione prevista
             </div>
           )}
         </div>

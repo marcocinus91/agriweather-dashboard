@@ -1,6 +1,7 @@
 import { CurrentWeather } from "@/types/weather";
 import { getWeatherInfo } from "@/lib/weatherCodes";
 import { Card, CardContent } from "@/components/ui/card";
+import { Droplets, Wind } from "lucide-react";
 
 interface WeatherCardProps {
   current: CurrentWeather;
@@ -32,7 +33,8 @@ export function WeatherCard({ current, locationName }: WeatherCardProps) {
         </div>
 
         <div className="grid grid-cols-2 gap-4 mt-4 sm:mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
-          <div>
+          <div className="flex items-center gap-2">
+            <Droplets className="h-4 w-4 text-blue-500" />
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
               Umidità
             </p>
@@ -41,12 +43,15 @@ export function WeatherCard({ current, locationName }: WeatherCardProps) {
             </p>
           </div>
           <div>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-              Vento
-            </p>
-            <p className="text-base sm:text-lg font-medium">
-              {current.wind_speed_10m} km/h
-            </p>
+            <div className="flex items-center gap-2">
+              <Wind className="h-4 w-4 text-slate-500" />
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                Vento
+              </p>
+              <p className="text-base sm:text-lg font-medium">
+                {current.wind_speed_10m} km/h
+              </p>
+            </div>
           </div>
         </div>
       </CardContent>

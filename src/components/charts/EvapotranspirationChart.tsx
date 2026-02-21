@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { DailyWeather } from "@/types/weather";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Droplet } from "lucide-react";
 
 interface EvapotranspirationChartProps {
   daily: DailyWeather;
@@ -31,8 +32,9 @@ export function EvapotranspirationChart({
   return (
     <Card className="dark:bg-slate-800 dark:border-slate-700">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-medium">
-          💧 Evapotraspirazione 7 giorni
+        <CardTitle className="text-base font-medium flex items-center gap-2">
+          <Droplet className="h-5 w-5 text-cyan-500" />
+          Evapotraspirazione 7 giorni
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -69,7 +71,6 @@ export function EvapotranspirationChart({
                   backgroundColor: "#fff",
                 }}
               />
-              {/* Linee di riferimento per i livelli */}
               <ReferenceLine y={3} stroke="#22c55e" strokeDasharray="3 3" />
               <ReferenceLine y={5} stroke="#f59e0b" strokeDasharray="3 3" />
               <ReferenceLine y={7} stroke="#ef4444" strokeDasharray="3 3" />

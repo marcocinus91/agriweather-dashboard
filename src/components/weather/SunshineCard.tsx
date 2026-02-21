@@ -1,5 +1,6 @@
 import { DailyWeather } from "@/types/weather";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Sun } from "lucide-react";
 
 interface SunshineCardProps {
   daily: DailyWeather;
@@ -48,21 +49,21 @@ function getSunshineLevel(hours: number): {
 }
 
 export function SunshineCard({ daily }: SunshineCardProps) {
-  // Converti da secondi a ore
   const sunshineHours = daily.sunshine_duration.map(secondsToHours);
 
-  // Oggi
   const todaySunshine = sunshineHours[0];
   const todayLevel = getSunshineLevel(todaySunshine);
 
-  // Totale e media settimanale
   const weeklyTotal = sunshineHours.reduce((sum, h) => sum + h, 0);
   const weeklyAvg = weeklyTotal / sunshineHours.length;
 
   return (
     <Card className="dark:bg-slate-800 dark:border-slate-700">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-medium">☀️ Ore di Sole</CardTitle>
+        <CardTitle className="text-base font-medium flex items-center gap-2">
+          <Sun className="h-5 w-5 text-yellow-500" />
+          Ore di Sole
+        </CardTitle>
       </CardHeader>
       <CardContent>
         {/* Dati principali */}

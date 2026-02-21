@@ -1,5 +1,6 @@
 import { DailyWeather } from "@/types/weather";
 import { Card, CardContent } from "@/components/ui/card";
+import { Snowflake } from "lucide-react";
 
 interface FrostAlertProps {
   daily: DailyWeather;
@@ -30,7 +31,9 @@ export function FrostAlert({ daily }: FrostAlertProps) {
     <Card className="border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/30">
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
-          <span className="text-xl sm:text-2xl">🥶</span>
+          <div className="p-2 bg-blue-100 dark:bg-blue-800 rounded-lg">
+            <Snowflake className="h-5 w-5 text-blue-600 dark:text-blue-300" />
+          </div>
           <div className="min-w-0 flex-1">
             <p className="font-semibold text-blue-900 dark:text-blue-100 text-sm sm:text-base">
               Attenzione: rischio gelate

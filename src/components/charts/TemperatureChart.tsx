@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { DailyWeather } from "@/types/weather";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Thermometer } from "lucide-react";
 
 interface TemperatureChartProps {
   daily: DailyWeather;
@@ -30,8 +31,9 @@ export function TemperatureChart({ daily }: TemperatureChartProps) {
   return (
     <Card className="dark:bg-slate-800 dark:border-slate-700">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-medium">
-          🌡️ Temperature 7 giorni
+        <CardTitle className="text-base font-medium flex items-center gap-2">
+          <Thermometer className="h-5 w-5 text-red-500" />
+          Temperature 7 giorni
         </CardTitle>
       </CardHeader>
       <CardContent>

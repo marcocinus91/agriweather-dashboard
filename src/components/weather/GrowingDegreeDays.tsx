@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { DailyWeather } from "@/types/weather";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Sprout, Calendar } from "lucide-react";
 
 interface GrowingDegreeDaysProps {
   daily: DailyWeather;
@@ -12,7 +13,7 @@ interface CropPreset {
   name: string;
   baseTemp: number;
   icon: string;
-  maturityGDD: number; // GDD necessari per maturazione
+  maturityGDD: number;
 }
 
 const CROP_PRESETS: CropPreset[] = [
@@ -26,13 +27,12 @@ const CROP_PRESETS: CropPreset[] = [
 function calculateDailyGDD(tmax: number, tmin: number, tbase: number): number {
   const avgTemp = (tmax + tmin) / 2;
   const gdd = avgTemp - tbase;
-  return Math.max(0, gdd); // GDD non può essere negativo
+  return Math.max(0, gdd);
 }
 
 export function GrowingDegreeDays({ daily }: GrowingDegreeDaysProps) {
   const [selectedCrop, setSelectedCrop] = useState<CropPreset>(CROP_PRESETS[0]);
 
-  // Calcola GDD per ogni giorno
   const dailyGDD = daily.time.map((_, index) =>
     calculateDailyGDD(
       daily.temperature_2m_max[index],
@@ -41,21 +41,18 @@ export function GrowingDegreeDays({ daily }: GrowingDegreeDaysProps) {
     ),
   );
 
-  // Totale GDD dei prossimi 7 giorni
   const weeklyGDD = dailyGDD.reduce((sum, gdd) => sum + gdd, 0);
-
-  // Media giornaliera
   const avgDailyGDD = weeklyGDD / dailyGDD.length;
 
-  // Stima giorni per raggiungere maturazione (approssimativo)
   const daysToMaturity =
     avgDailyGDD > 0 ? Math.round(selectedCrop.maturityGDD / avgDailyGDD) : null;
 
   return (
     <Card className="dark:bg-slate-800 dark:border-slate-700">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-medium">
-          🌱 Gradi Giorno (GDD)
+        <CardTitle className="text-base font-medium flex items-center gap-2">
+          <Sprout className="h-5 w-5 text-green-500" />
+          Gradi Giorno (GDD)
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -110,7 +107,7 @@ export function GrowingDegreeDays({ daily }: GrowingDegreeDaysProps) {
             </span>
           </div>
 
-          {/* Barra progresso verso maturazione */}
+          {/* Barra progresso */}
           <div className="mb-2">
             <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
               <span>Progresso stimato (7gg)</span>
@@ -129,9 +126,9 @@ export function GrowingDegreeDays({ daily }: GrowingDegreeDaysProps) {
           </div>
 
           {daysToMaturity && (
-            <p className="text-xs text-slate-600 dark:text-slate-300">
-              📅 A questo ritmo, maturazione stimata in ~{daysToMaturity} giorni
-              dalla semina
+            <p className="text-xs text-slate-600 dark:text-slate-300 flex items-center gap-1">
+              <Calendar className="h-3 w-3" />A questo ritmo, maturazione
+              stimata in ~{daysToMaturity} giorni dalla semina
             </p>
           )}
         </div>

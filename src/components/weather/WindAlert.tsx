@@ -1,5 +1,6 @@
 import { DailyWeather } from "@/types/weather";
 import { Card, CardContent } from "@/components/ui/card";
+import { Wind, AlertTriangle } from "lucide-react";
 
 interface WindAlertProps {
   daily: DailyWeather;
@@ -41,7 +42,6 @@ export function WindAlert({ daily }: WindAlertProps) {
     return null;
   }
 
-  // Determina il livello massimo per il colore della card
   const maxLevel = windyDays.some((d) => d.level === "molto forte")
     ? "molto forte"
     : windyDays.some((d) => d.level === "forte")
@@ -55,6 +55,18 @@ export function WindAlert({ daily }: WindAlertProps) {
       "border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-900/30",
     "molto forte":
       "border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/30",
+  };
+
+  const iconBgStyles = {
+    moderato: "bg-yellow-100 dark:bg-yellow-800",
+    forte: "bg-orange-100 dark:bg-orange-800",
+    "molto forte": "bg-red-100 dark:bg-red-800",
+  };
+
+  const iconStyles = {
+    moderato: "text-yellow-600 dark:text-yellow-300",
+    forte: "text-orange-600 dark:text-orange-300",
+    "molto forte": "text-red-600 dark:text-red-300",
   };
 
   const textStyles = {
@@ -86,7 +98,13 @@ export function WindAlert({ daily }: WindAlertProps) {
     <Card className={cardStyles[maxLevel]}>
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
-          <span className="text-xl sm:text-2xl">💨</span>
+          <div className={`p-2 rounded-lg ${iconBgStyles[maxLevel]}`}>
+            {maxLevel === "molto forte" ? (
+              <AlertTriangle className={`h-5 w-5 ${iconStyles[maxLevel]}`} />
+            ) : (
+              <Wind className={`h-5 w-5 ${iconStyles[maxLevel]}`} />
+            )}
+          </div>
           <div className="min-w-0 flex-1">
             <p
               className={`font-semibold text-sm sm:text-base ${textStyles[maxLevel]}`}
@@ -101,7 +119,6 @@ export function WindAlert({ daily }: WindAlertProps) {
                 >
                   • {day.date}:{" "}
                   <span className="font-medium">{day.windSpeed} km/h</span>
-                  {day.level === "molto forte" && " ⚠️"}
                 </li>
               ))}
             </ul>

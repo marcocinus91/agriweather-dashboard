@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useTheme } from "@/hooks/useTheme";
 import { Button } from "@/components/ui/button";
+import { Wheat, Moon, Sun } from "lucide-react"
 
 export function Navbar() {
   const { theme, toggleTheme } = useTheme();
@@ -11,7 +12,7 @@ export function Navbar() {
     <nav className="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 sticky top-0 z-50">
       <div className="container mx-auto px-4 h-14 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-xl">🌾</span>
+          <Wheat className="h-6 w-6 text-green-600"/>
           <span className="font-semibold text-lg hidden sm:inline">
             AgriWeather
           </span>
@@ -27,7 +28,7 @@ export function Navbar() {
             onClick={toggleTheme}
             className="h-9 w-9 p-0"
           >
-            {theme === "light" ? "🌙" : "☀️"}
+            {theme === "light" ? <Moon className="h-5 w-5"/> : <Sun className="h-5 w-5"/>}
           </Button>
         </div>
       </div>

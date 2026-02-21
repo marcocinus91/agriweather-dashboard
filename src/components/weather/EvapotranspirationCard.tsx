@@ -1,11 +1,11 @@
 import { DailyWeather } from "@/types/weather";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Droplet } from "lucide-react";
 
 interface EvapotranspirationCardProps {
   daily: DailyWeather;
 }
 
-// Calcola il livello di irrigazione consigliato
 function getIrrigationAdvice(et: number): {
   level: "basso" | "moderato" | "alto" | "molto alto";
   color: string;
@@ -39,15 +39,12 @@ function getIrrigationAdvice(et: number): {
 }
 
 export function EvapotranspirationCard({ daily }: EvapotranspirationCardProps) {
-  // Media ET dei prossimi 7 giorni
   const avgET =
     daily.et0_fao_evapotranspiration.reduce((sum, val) => sum + val, 0) /
     daily.et0_fao_evapotranspiration.length;
 
-  // ET di oggi
   const todayET = daily.et0_fao_evapotranspiration[0];
 
-  // Totale ET settimanale (acqua persa in mm)
   const weeklyTotal = daily.et0_fao_evapotranspiration.reduce(
     (sum, val) => sum + val,
     0,
@@ -58,8 +55,9 @@ export function EvapotranspirationCard({ daily }: EvapotranspirationCardProps) {
   return (
     <Card className="dark:bg-slate-800 dark:border-slate-700">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-medium">
-          💧 Evapotraspirazione (ET₀)
+        <CardTitle className="text-base font-medium flex items-center gap-2">
+          <Droplet className="h-5 w-5 text-cyan-500" />
+          Evapotraspirazione (ET₀)
         </CardTitle>
       </CardHeader>
       <CardContent>
