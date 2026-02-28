@@ -1,35 +1,78 @@
 "use client";
 
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { useGeolocation, DEFAULT_COORDS } from "@/hooks/useGeolocation";
 import { useWeather } from "@/hooks/useWeather";
 import { useSavedCities, SavedCity } from "@/hooks/useSavedCities";
-import { Map } from "@/components/map/Map";
 import { WeatherCard } from "@/components/weather/WeatherCard";
 import { SearchCity } from "@/components/weather/SearchCity";
-import { FrostAlert } from "@/components/weather/FrostAlert";
 import { SavedCities } from "@/components/layout/SavedCities";
-import { TemperatureChart } from "@/components/charts/TemperatureChart";
-import { PrecipitationChart } from "@/components/charts/PrecipitationChart";
-import { EvapotranspirationCard } from "@/components/weather/EvapotranspirationCard";
-import { EvapotranspirationChart } from "@/components/charts/EvapotranspirationChart";
 import { Button } from "@/components/ui/button";
 import { Tabs } from "@/components/ui/tab-custom";
 import { GeocodingResult } from "@/lib/api/geocoding";
-import { WindAlert } from "./WindAlert";
-import { GrowingDegreeDays } from "./GrowingDegreeDays";
-import { SprayWindows } from "./SprayWindows";
-import { SunshineCard } from "./SunshineCard";
-import { DiseaseRiskCard } from "./DiseaseRiskCard";
-import { ChillingHoursCard } from "./ChillingHoursCard";
-import { NowcastingCard } from "./NowcastingCard";
 import {
   CalendarDays,
   CloudSun,
   Sprout,
   AlertTriangle,
   MapPin,
+  Loader2,
 } from "lucide-react";
+
+// Lazy load componenti pesanti
+const Map = lazy(() =>
+  import("@/components/map/Map").then((mod) => ({ default: mod.Map })),
+);
+const NowcastingCard = lazy(() =>
+  import("./NowcastingCard").then((mod) => ({ default: mod.NowcastingCard })),
+);
+const SprayWindows = lazy(() =>
+  import("./SprayWindows").then((mod) => ({ default: mod.SprayWindows })),
+);
+const TemperatureChart = lazy(() =>
+  import("@/components/charts/TemperatureChart").then((mod) => ({
+    default: mod.TemperatureChart,
+  })),
+);
+const PrecipitationChart = lazy(() =>
+  import("@/components/charts/PrecipitationChart").then((mod) => ({
+    default: mod.PrecipitationChart,
+  })),
+);
+const EvapotranspirationChart = lazy(() =>
+  import("@/components/charts/EvapotranspirationChart").then((mod) => ({
+    default: mod.EvapotranspirationChart,
+  })),
+);
+const SunshineCard = lazy(() =>
+  import("./SunshineCard").then((mod) => ({ default: mod.SunshineCard })),
+);
+const GrowingDegreeDays = lazy(() =>
+  import("./GrowingDegreeDays").then((mod) => ({
+    default: mod.GrowingDegreeDays,
+  })),
+);
+const ChillingHoursCard = lazy(() =>
+  import("./ChillingHoursCard").then((mod) => ({
+    default: mod.ChillingHoursCard,
+  })),
+);
+const EvapotranspirationCard = lazy(() =>
+  import("./EvapotranspirationCard").then((mod) => ({
+    default: mod.EvapotranspirationCard,
+  })),
+);
+const FrostAlert = lazy(() =>
+  import("./FrostAlert").then((mod) => ({ default: mod.FrostAlert })),
+);
+const WindAlert = lazy(() =>
+  import("./WindAlert").then((mod) => ({ default: mod.WindAlert })),
+);
+const DiseaseRiskCard = lazy(() =>
+  import("./DiseaseRiskCard").then((mod) => ({
+    default: mod.DiseaseRiskCard,
+  })),
+);
 
 interface Location {
   latitude: number;
@@ -51,6 +94,26 @@ const TABS = [
     icon: <AlertTriangle className="h-4 w-4" />,
   },
 ];
+
+// Loading skeleton component
+function Skeleton({ className = "h-40" }: { className?: string }) {
+  return (
+    <div
+      className={`bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse ${className}`}
+    />
+  );
+}
+
+// Loading spinner component
+function LoadingSpinner({ className = "h-40" }: { className?: string }) {
+  return (
+    <div
+      className={`bg-slate-50 dark:bg-slate-800/50 rounded-lg flex items-center justify-center ${className}`}
+    >
+      <Loader2 className="h-6 w-6 animate-spin text-slate-400" />
+    </div>
+  );
+}
 
 export function Dashboard() {
   const {
@@ -105,27 +168,24 @@ export function Dashboard() {
   const activeAlerts = (() => {
     if (!weather) return 0;
     let count = 0;
-
-    // Frost
     if (weather.daily.temperature_2m_min.some((t) => t < 2)) count++;
-    // Wind
     if (weather.daily.wind_speed_10m_max.some((w) => w >= 30)) count++;
-
     return count;
   })();
-
-  // Loading skeleton
-  const Skeleton = ({ className = "h-40" }: { className?: string }) => (
-    <div
-      className={`bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse ${className}`}
-    />
-  );
 
   return (
     <div className="flex flex-col lg:flex-row h-[calc(100vh-56px)]">
       {/* Mappa */}
       <div className="w-full lg:w-1/2 h-[30vh] lg:h-full">
-        <Map center={[latitude, longitude]} zoom={9} />
+        <Suspense
+          fallback={
+            <div className="w-full h-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+            </div>
+          }
+        >
+          <Map center={[latitude, longitude]} zoom={9} />
+        </Suspense>
       </div>
 
       {/* Dati meteo */}
@@ -146,7 +206,7 @@ export function Dashboard() {
                 disabled={geoLoading}
                 size="sm"
                 variant="outline"
-                className="flex-shrink-0"
+                className="shrink-0"
               >
                 <MapPin className="h-4 w-4" />
               </Button>
@@ -209,10 +269,10 @@ export function Dashboard() {
               {/* TAB: OGGI */}
               {activeTab === "oggi" && (
                 <div className="space-y-4">
-                  {/* Nowcasting */}
-                  <NowcastingCard latitude={latitude} longitude={longitude} />
+                  <Suspense fallback={<LoadingSpinner className="h-48" />}>
+                    <NowcastingCard latitude={latitude} longitude={longitude} />
+                  </Suspense>
 
-                  {/* Weather Card */}
                   {weatherLoading || !weather ? (
                     <Skeleton />
                   ) : (
@@ -222,12 +282,9 @@ export function Dashboard() {
                     />
                   )}
 
-                  {/* Spray Windows */}
-                  {weatherLoading || !weather ? (
-                    <Skeleton className="h-48" />
-                  ) : (
-                    <SprayWindows hourly={weather.hourly} />
-                  )}
+                  <Suspense fallback={<LoadingSpinner className="h-48" />}>
+                    {weather && <SprayWindows hourly={weather.hourly} />}
+                  </Suspense>
                 </div>
               )}
 
@@ -242,12 +299,12 @@ export function Dashboard() {
                       <Skeleton className="h-48" />
                     </>
                   ) : (
-                    <>
+                    <Suspense fallback={<LoadingSpinner className="h-64" />}>
                       <TemperatureChart daily={weather.daily} />
                       <PrecipitationChart daily={weather.daily} />
                       <EvapotranspirationChart daily={weather.daily} />
                       <SunshineCard daily={weather.daily} />
-                    </>
+                    </Suspense>
                   )}
                 </div>
               )}
@@ -262,11 +319,11 @@ export function Dashboard() {
                       <Skeleton className="h-40" />
                     </>
                   ) : (
-                    <>
+                    <Suspense fallback={<LoadingSpinner className="h-48" />}>
                       <GrowingDegreeDays daily={weather.daily} />
                       <ChillingHoursCard hourly={weather.hourly} />
                       <EvapotranspirationCard daily={weather.daily} />
-                    </>
+                    </Suspense>
                   )}
                 </div>
               )}
@@ -281,14 +338,13 @@ export function Dashboard() {
                       <Skeleton className="h-64" />
                     </>
                   ) : (
-                    <>
+                    <Suspense fallback={<LoadingSpinner />}>
                       <FrostAlert daily={weather.daily} />
                       <WindAlert daily={weather.daily} />
                       <DiseaseRiskCard hourly={weather.hourly} />
-                    </>
+                    </Suspense>
                   )}
 
-                  {/* Messaggio se nessun alert */}
                   {weather && activeAlerts === 0 && (
                     <div className="p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-lg text-center">
                       <p className="text-green-700 dark:text-green-300 text-sm">
