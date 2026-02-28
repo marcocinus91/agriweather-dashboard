@@ -4,13 +4,13 @@ Dashboard meteo professionale per agricoltori con supporto decisionale per irrig
 
 **[Demo Live](https://agriweather-dashboard.vercel.app/)**
 
-![Status](https://img.shields.io/badge/Status-Live-brightgreen) ![Next.js](https://img.shields.io/badge/Next.js-14-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![License](https://img.shields.io/badge/License-MIT-yellow)
+![Status](https://img.shields.io/badge/Status-Live-brightgreen) ![Next.js](https://img.shields.io/badge/Next.js-14-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Test](https://img.shields.io/badge/Tests-49%20passed-success) ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
 
 ## Panoramica
 
-AgriWeather Dashboard trasforma i dati meteorologici in decisioni agronomiche operative. Non si limita a mostrare "che tempo fa", ma risponde a domande concrete: _Posso trattare oggi? Devo irrigare domani? Rischio gelate stanotte? Pioverà nelle prossime ore?_
+AgriWeather Dashboard trasforma i dati meteorologici in decisioni agronomiche operative. Non si limita a mostrare "che tempo fa", ma risponde a domande concrete: _Posso trattare oggi? Pioverà nelle prossime 2 ore? Le mie colture stanno accumulando abbastanza calore?_
 
 L'applicazione integra previsioni meteo ad alta risoluzione con indicatori agrometeorologici specifici, modelli di rischio fitosanitario e strumenti di pianificazione per le principali operazioni colturali.
 
@@ -18,88 +18,114 @@ L'applicazione integra previsioni meteo ad alta risoluzione con indicatori agrom
 
 ## Funzionalità
 
+### Navigazione a Tab
+
+L'interfaccia è organizzata in 4 sezioni per accesso rapido alle informazioni:
+
+| Tab           | Contenuto                                            |
+| ------------- | ---------------------------------------------------- |
+| **Oggi**      | Nowcasting, meteo attuale, finestre di trattamento   |
+| **Settimana** | Grafici temperature, precipitazioni, ET, ore di sole |
+| **Colture**   | Gradi Giorno, ore di freddo, evapotraspirazione      |
+| **Rischi**    | Alert gelate, vento, malattie fungine                |
+
 ### Nowcasting e Previsioni
 
-| Funzionalità                  | Descrizione                                                               |
-| ----------------------------- | ------------------------------------------------------------------------- |
-| **Nowcasting Precipitazioni** | Previsione pioggia a 15 minuti per le prossime 2 ore con alert automatici |
-| **Alert Pioggia Imminente**   | Notifica visuale quando precipitazioni previste entro 30-60 minuti        |
-| **Previsioni 7 Giorni**       | Dati orari e giornalieri con grafici interattivi                          |
-| **Aggiornamento Automatico**  | Nowcasting aggiornato ogni 5 minuti                                       |
+| Funzionalità                  | Descrizione                                                        |
+| ----------------------------- | ------------------------------------------------------------------ |
+| **Nowcasting Precipitazioni** | Previsione pioggia a 15 minuti per le prossime 2 ore               |
+| **Alert Pioggia Imminente**   | Notifica visuale quando precipitazioni previste entro 30-60 minuti |
+| **Previsioni 7 Giorni**       | Dati orari e giornalieri con grafici interattivi                   |
+| **Auto-refresh**              | Nowcasting aggiornato automaticamente ogni 5 minuti                |
 
 ### Localizzazione e Mappa
 
-| Funzionalità          | Descrizione                                                     |
-| --------------------- | --------------------------------------------------------------- |
-| **Mappa Interattiva** | Visualizzazione geografica con Leaflet.js e marker di posizione |
-| **Geolocalizzazione** | Rilevamento automatico della posizione tramite browser          |
-| **Ricerca Città**     | Autocomplete con API di geocoding per qualsiasi località        |
-| **Città Salvate**     | Memorizzazione fino a 5 località preferite in localStorage      |
+| Funzionalità          | Descrizione                               |
+| --------------------- | ----------------------------------------- |
+| **Mappa Interattiva** | Visualizzazione geografica con Leaflet.js |
+| **Geolocalizzazione** | Rilevamento automatico posizione          |
+| **Ricerca Città**     | Autocomplete per qualsiasi località       |
+| **Città Salvate**     | Fino a 5 località preferite               |
 
 ### Indicatori Agrometeorologici
 
-| Indicatore                   | Utilizzo Agronomico                                                  |
-| ---------------------------- | -------------------------------------------------------------------- |
-| **Evapotraspirazione (ET₀)** | Calcolo del fabbisogno irriguo basato su formula FAO Penman-Monteith |
-| **Gradi Giorno (GDD)**       | Accumulo termico per previsione stadi fenologici e maturazione       |
-| **Ore di Freddo**            | Monitoraggio vernalizzazione per frutticoltura (modello Utah)        |
-| **Ore di Sole**              | Valutazione potenziale fotosintetico e qualità produttiva            |
-| **Bagnatura Fogliare**       | Stima basata su umidità, punto di rugiada e precipitazioni           |
+| Indicatore                   | Utilizzo Agronomico                              |
+| ---------------------------- | ------------------------------------------------ |
+| **Evapotraspirazione (ET₀)** | Fabbisogno irriguo (formula FAO Penman-Monteith) |
+| **Gradi Giorno (GDD)**       | Accumulo termico per stadi fenologici            |
+| **Ore di Freddo**            | Vernalizzazione frutticoltura (modello Utah)     |
+| **Ore di Sole**              | Potenziale fotosintetico                         |
+| **Bagnatura Fogliare**       | Stima rischio malattie                           |
 
 ### Sistema di Alert
 
-| Alert                 | Soglie e Condizioni                                                    |
-| --------------------- | ---------------------------------------------------------------------- |
-| **Pioggia Imminente** | Precipitazioni previste entro 30/60/120 minuti                         |
-| **Frost Alert**       | Temperature minime < 2°C con indicazione giorni a rischio              |
-| **Wind Alert**        | Vento > 30 km/h (moderato), > 40 km/h (forte), > 60 km/h (molto forte) |
-| **Rischio Malattie**  | Peronospora, Oidio, Botrite, Ruggine basati su T, UR e bagnatura       |
+| Alert                 | Soglie                               |
+| --------------------- | ------------------------------------ |
+| **Pioggia Imminente** | < 30 / 60 / 120 minuti               |
+| **Frost Alert**       | Temperature < 2°C                    |
+| **Wind Alert**        | Vento > 30 / 40 / 60 km/h            |
+| **Rischio Malattie**  | Peronospora, Oidio, Botrite, Ruggine |
 
 ### Strumenti Decisionali
 
-| Strumento                      | Funzione                                                                     |
-| ------------------------------ | ---------------------------------------------------------------------------- |
-| **Spray Windows**              | Identificazione finestre ottimali per trattamenti fitosanitari               |
-| **Consigli Irrigazione**       | Raccomandazioni basate su deficit idrico e ET giornaliera                    |
-| **Selezione Coltura**          | Parametri GDD personalizzati per Mais, Grano, Pomodoro, Vite, Girasole       |
-| **Fabbisogno Vernalizzazione** | Progresso accumulo freddo per Melo, Pero, Pesco, Ciliegio, Albicocco, Susino |
-
-### Interfaccia
-
-- Design responsive ottimizzato per uso in campo (mobile-first)
-- Tema chiaro/scuro con persistenza preferenze
-- Grafici interattivi con Recharts
-- Loading states e gestione errori
+| Strumento                | Funzione                                                     |
+| ------------------------ | ------------------------------------------------------------ |
+| **Spray Windows**        | Finestre ottimali per trattamenti                            |
+| **Consigli Irrigazione** | Raccomandazioni basate su ET                                 |
+| **Selezione Coltura**    | GDD per Mais, Grano, Pomodoro, Vite, Girasole                |
+| **Vernalizzazione**      | Progresso per Melo, Pero, Pesco, Ciliegio, Albicocco, Susino |
 
 ---
 
-## Stack Tecnologico
+## Architettura
 
-| Categoria         | Tecnologia                           |
-| ----------------- | ------------------------------------ |
-| **Framework**     | Next.js 14 (App Router)              |
-| **Linguaggio**    | TypeScript (strict mode)             |
-| **Styling**       | Tailwind CSS                         |
-| **Componenti UI** | shadcn/ui                            |
-| **Mappe**         | Leaflet.js con react-leaflet         |
-| **Grafici**       | Recharts                             |
-| **Icone**         | Lucide React                         |
-| **API Meteo**     | Open-Meteo (gratuita, senza API key) |
-| **Deploy**        | Vercel                               |
+### Stack Tecnologico
+
+| Categoria         | Tecnologia                 |
+| ----------------- | -------------------------- |
+| **Framework**     | Next.js 14 (App Router)    |
+| **Linguaggio**    | TypeScript (strict mode)   |
+| **Styling**       | Tailwind CSS               |
+| **Componenti UI** | shadcn/ui                  |
+| **Mappe**         | Leaflet.js (react-leaflet) |
+| **Grafici**       | Recharts                   |
+| **Icone**         | Lucide React               |
+| **Data Fetching** | TanStack React Query       |
+| **Testing**       | Vitest                     |
+| **API Meteo**     | Open-Meteo                 |
+| **Deploy**        | Vercel                     |
+
+### Ottimizzazioni Performance
+
+| Tecnica              | Beneficio                                       |
+| -------------------- | ----------------------------------------------- |
+| **Lazy Loading**     | Componenti caricati on-demand per tab           |
+| **React Query**      | Cache automatica, retry, stale-while-revalidate |
+| **Error Boundaries** | Crash isolati per componente                    |
+| **Code Splitting**   | Bundle iniziale ridotto                         |
+
+### Testing
+
+```bash
+npm test        # Watch mode
+npm run test:run # Single run
+```
+
+**49 test unitari** coprono i modelli agronomici critici:
+
+- Calcolo Gradi Giorno (GDD)
+- Ore di freddo e Chill Units (modello Utah)
+- Rischio malattie fungine (Peronospora, Oidio, Botrite, Ruggine)
+- Stima bagnatura fogliare
 
 ---
 
 ## Installazione
 
 ```bash
-# Clona il repository
 git clone https://github.com/YOUR-USERNAME/agriweather-dashboard.git
 cd agriweather-dashboard
-
-# Installa le dipendenze
 npm install
-
-# Avvia il server di sviluppo
 npm run dev
 ```
 
@@ -112,195 +138,131 @@ Apri [http://localhost:3000](http://localhost:3000)
 ```
 src/
 ├── app/                          # Next.js App Router
-│   ├── layout.tsx
-│   ├── page.tsx
-│   └── globals.css
 ├── components/
-│   ├── charts/                   # Visualizzazioni dati
-│   │   ├── TemperatureChart.tsx
-│   │   ├── PrecipitationChart.tsx
-│   │   └── EvapotranspirationChart.tsx
-│   ├── layout/
-│   │   ├── Navbar.tsx
-│   │   └── SavedCities.tsx
-│   ├── map/
-│   │   ├── Map.tsx
-│   │   └── WeatherMap.tsx
-│   ├── ui/                       # shadcn/ui components
+│   ├── charts/                   # Grafici Recharts
+│   ├── error/                    # Error Boundaries
+│   ├── layout/                   # Navbar, SavedCities
+│   ├── map/                      # Mappa Leaflet
+│   ├── providers/                # React Query Provider
+│   ├── ui/                       # shadcn/ui + Tabs
 │   └── weather/                  # Componenti agrometeo
-│       ├── Dashboard.tsx
-│       ├── WeatherCard.tsx
-│       ├── NowcastingCard.tsx
-│       ├── FrostAlert.tsx
-│       ├── WindAlert.tsx
-│       ├── EvapotranspirationCard.tsx
-│       ├── GrowingDegreeDays.tsx
-│       ├── SprayWindows.tsx
-│       ├── SunshineCard.tsx
-│       ├── DiseaseRiskCard.tsx
-│       ├── ChillingHoursCard.tsx
-│       └── SearchCity.tsx
-├── hooks/
-│   ├── useGeolocation.ts
-│   ├── useWeather.ts
-│   ├── useSavedCities.ts
-│   └── useTheme.ts
+├── hooks/                        # Custom hooks
 ├── lib/
-│   ├── api/
-│   │   ├── openMeteo.ts
-│   │   ├── geocoding.ts
-│   │   └── nowcasting.ts
-│   ├── weatherCodes.ts
-│   └── utils.ts
-└── types/
-    └── weather.ts
+│   ├── agro/                     # Modelli agronomici (testati)
+│   │   ├── gdd.ts
+│   │   ├── chilling.ts
+│   │   └── disease.ts
+│   └── api/                      # Client API
+├── test/                         # Test unitari
+└── types/                        # TypeScript interfaces
 ```
 
 ---
 
 ## API e Dati
 
-Il progetto utilizza le API gratuite di [Open-Meteo](https://open-meteo.com/). Non è richiesta alcuna API key.
+API gratuite di [Open-Meteo](https://open-meteo.com/), nessuna API key richiesta.
 
-### Endpoint Utilizzati
+### Endpoint
 
-| Endpoint          | Descrizione                     | Aggiornamento  |
-| ----------------- | ------------------------------- | -------------- |
-| **Forecast API**  | Previsioni orarie e giornaliere | Ogni ora       |
-| **Nowcasting**    | Previsioni a 15 minuti          | Ogni 15 minuti |
-| **Geocoding API** | Ricerca località                | On-demand      |
+| Endpoint       | Descrizione         | Refresh            |
+| -------------- | ------------------- | ------------------ |
+| **Forecast**   | Previsioni 7 giorni | Cache 10 min       |
+| **Nowcasting** | Previsioni 15 min   | Auto-refresh 5 min |
+| **Geocoding**  | Ricerca località    | On-demand          |
 
-### Parametri Meteo
+### Parametri
 
-| Parametro                    | Descrizione                | Componente                         |
-| ---------------------------- | -------------------------- | ---------------------------------- |
-| `temperature_2m`             | Temperatura aria a 2m      | WeatherCard, Grafici, GDD          |
-| `temperature_2m_max/min`     | Temperature giornaliere    | Grafici, Frost Alert               |
-| `weather_code`               | Codice condizioni WMO      | Icone meteo                        |
-| `relative_humidity_2m`       | Umidità relativa           | Spray Windows, Disease Risk        |
-| `wind_speed_10m`             | Velocità vento             | Wind Alert, Spray Windows          |
-| `precipitation`              | Precipitazioni             | Grafici, Spray Windows, Nowcasting |
-| `precipitation_probability`  | Probabilità precipitazioni | Nowcasting                         |
-| `dew_point_2m`               | Punto di rugiada           | Bagnatura fogliare                 |
-| `et0_fao_evapotranspiration` | Evapotraspirazione         | Irrigazione                        |
-| `sunshine_duration`          | Durata soleggiamento       | Sunshine Card                      |
+| Parametro                    | Componente                         |
+| ---------------------------- | ---------------------------------- |
+| `temperature_2m`             | WeatherCard, GDD, Grafici          |
+| `precipitation`              | Nowcasting, Grafici, Spray Windows |
+| `wind_speed_10m`             | Wind Alert, Spray Windows          |
+| `relative_humidity_2m`       | Disease Risk, Spray Windows        |
+| `dew_point_2m`               | Bagnatura fogliare                 |
+| `et0_fao_evapotranspiration` | Irrigazione                        |
+| `sunshine_duration`          | Ore di sole                        |
 
 ---
 
-## Modelli e Calcoli
+## Modelli Agronomici
 
-### Nowcasting Precipitazioni
-
-Il sistema analizza i dati a 15 minuti per le prossime 2 ore e genera alert:
-
-- **Pioggia imminente** (< 30 min): Alert arancione
-- **Pioggia possibile** (30-60 min): Alert giallo
-- **Pioggia prevista** (1-2 ore): Alert blu
-- **Sereno**: Indicatore verde
-
-### Gradi Giorno (Growing Degree Days)
+### Gradi Giorno (GDD)
 
 ```
 GDD = max(0, ((Tmax + Tmin) / 2) - Tbase)
 ```
 
-Temperature base per coltura:
+| Coltura  | Tbase | GDD Maturazione |
+| -------- | ----- | --------------- |
+| Mais     | 10°C  | 2700            |
+| Grano    | 5°C   | 1500            |
+| Pomodoro | 10°C  | 1400            |
+| Vite     | 10°C  | 1800            |
+| Girasole | 8°C   | 1600            |
 
-- Mais: 10°C
-- Grano: 5°C
-- Pomodoro: 10°C
-- Vite: 10°C
-- Girasole: 8°C
+### Ore di Freddo (Modello Utah)
 
-### Ore di Freddo (Modello Utah Semplificato)
+| Temperatura  | Chill Units |
+| ------------ | ----------- |
+| < 1.5°C      | 0           |
+| 1.5 - 2.5°C  | 0.5         |
+| 2.5 - 9.2°C  | 1.0         |
+| 9.2 - 12.5°C | 0.5         |
+| 12.5 - 16°C  | 0           |
+| 16 - 18°C    | -0.5        |
+| > 18°C       | -1.0        |
 
-| Range Temperatura | Chill Units |
-| ----------------- | ----------- |
-| < 1.5°C           | 0           |
-| 1.5 - 2.5°C       | 0.5         |
-| 2.5 - 9.2°C       | 1.0         |
-| 9.2 - 12.5°C      | 0.5         |
-| 12.5 - 16°C       | 0           |
-| 16 - 18°C         | -0.5        |
-| > 18°C            | -1.0        |
+### Rischio Malattie
 
-### Bagnatura Fogliare
-
-Foglia considerata bagnata quando:
-
-- Precipitazione > 0 mm
-- Umidità relativa >= 90%
-- Temperatura - Punto di rugiada <= 2°C
-
-### Rischio Malattie Fungine
-
-| Patogeno    | Condizioni Favorevoli               |
-| ----------- | ----------------------------------- |
-| Peronospora | T 10-25°C, UR > 80%, bagnatura > 4h |
-| Oidio       | T 20-30°C, UR 40-80%                |
-| Botrite     | T 15-25°C, UR > 85%, bagnatura > 6h |
-| Ruggine     | T 15-25°C, bagnatura > 6h           |
+| Patogeno    | Condizioni Critiche                  |
+| ----------- | ------------------------------------ |
+| Peronospora | T 10-25°C, UR > 80%, bagnatura > 6h  |
+| Oidio       | T 20-30°C, UR 40-80%, bagnatura > 4h |
+| Botrite     | T 15-25°C, UR > 85%, bagnatura > 8h  |
+| Ruggine     | T 15-25°C, bagnatura > 8h            |
 
 ### Spray Windows
 
-Condizioni ottimali per trattamenti:
+Condizioni ottimali:
 
 - Vento < 15 km/h
 - Probabilità pioggia < 30%
 - Temperatura 5-30°C
-- Umidità relativa 40-90%
-
----
-
-## Screenshot
-
-### Nowcasting e Alert
-
-Il sistema di nowcasting mostra in tempo reale le precipitazioni previste con timeline visuale e alert automatici.
-
-### Dashboard Principale
-
-Vista completa con mappa interattiva, dati meteo attuali e indicatori agrometeorologici.
-
-### Rischio Malattie
-
-Analisi delle condizioni favorevoli per i principali patogeni fungini delle colture.
+- Umidità 40-90%
 
 ---
 
 ## Roadmap
 
-- [x] Dati meteo e previsioni 7 giorni
-- [x] Mappa interattiva con geolocalizzazione
-- [x] Nowcasting precipitazioni con alert
-- [x] Alert agricoli (gelate, vento)
-- [x] Evapotraspirazione e bilancio idrico
-- [x] Gradi Giorno con selezione coltura
-- [x] Finestre di trattamento (Spray Windows)
-- [x] Ore di sole e irraggiamento
-- [x] Rischio malattie fungine
-- [x] Ore di freddo per frutticoltura
-- [x] Tema scuro
-- [ ] Progressive Web App (PWA)
-- [ ] Notifiche push per alert critici
-- [ ] Supporto multilingua
+### Completato
+
+- [x] Previsioni 7 giorni con grafici
+- [x] Nowcasting precipitazioni
+- [x] Mappa interattiva
+- [x] Alert (gelate, vento, malattie)
+- [x] Indicatori agrometeo (ET₀, GDD, Chilling Hours)
+- [x] Spray Windows
+- [x] UI a tab
+- [x] Lazy loading
+- [x] React Query caching
+- [x] Error boundaries
+- [x] Test unitari (49)
+- [x] Dark mode
+
+### Prossimi Step
+
+- [ ] PWA con notifiche push
+- [ ] Storico meteo stagionale
+- [ ] Profili colturali personalizzabili
 - [ ] Export report PDF
-- [ ] Integrazione sensori IoT
-
----
-
-## Performance
-
-- Lighthouse Score: 90+ (Performance, Accessibility, Best Practices)
-- First Contentful Paint: < 1.5s
-- Time to Interactive: < 3s
-- Nowcasting refresh: ogni 5 minuti (configurabile)
+- [ ] Multi-lingua
 
 ---
 
 ## Licenza
 
-Distribuito con licenza MIT. Vedi `LICENSE` per informazioni.
+MIT License - vedi `LICENSE`
 
 ---
 
@@ -315,8 +277,7 @@ Distribuito con licenza MIT. Vedi `LICENSE` per informazioni.
 
 ## Riferimenti
 
-- [Open-Meteo API Documentation](https://open-meteo.com/en/docs)
-- [FAO Evapotranspiration Guidelines](https://www.fao.org/3/x0490e/x0490e00.htm)
+- [Open-Meteo API](https://open-meteo.com/en/docs)
+- [FAO Evapotranspiration](https://www.fao.org/3/x0490e/x0490e00.htm)
 - [Utah Chill Unit Model](https://extension.usu.edu/fruit/research/chill-units)
 - [Growing Degree Days - NOAA](https://www.weather.gov/ama/gdd)
-- [Integrated Pest Management - UC IPM](https://ipm.ucanr.edu/)
