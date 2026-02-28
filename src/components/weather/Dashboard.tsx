@@ -18,6 +18,7 @@ import {
   MapPin,
   Loader2,
 } from "lucide-react";
+import { CardErrorBoundary } from "@/components/error/CardErrorBoundary";
 
 // Lazy load componenti pesanti
 const Map = lazy(() =>
@@ -264,27 +265,36 @@ export function Dashboard() {
           }))}
           defaultTab="oggi"
         >
-          {(activeTab: string) => (
+          {(activeTab) => (
             <>
               {/* TAB: OGGI */}
               {activeTab === "oggi" && (
                 <div className="space-y-4">
-                  <Suspense fallback={<LoadingSpinner className="h-48" />}>
-                    <NowcastingCard latitude={latitude} longitude={longitude} />
-                  </Suspense>
+                  <CardErrorBoundary cardName="Nowcasting">
+                    <Suspense fallback={<LoadingSpinner className="h-48" />}>
+                      <NowcastingCard
+                        latitude={latitude}
+                        longitude={longitude}
+                      />
+                    </Suspense>
+                  </CardErrorBoundary>
 
                   {weatherLoading || !weather ? (
                     <Skeleton />
                   ) : (
-                    <WeatherCard
-                      current={weather.current}
-                      locationName={locationName}
-                    />
+                    <CardErrorBoundary cardName="Meteo attuale">
+                      <WeatherCard
+                        current={weather.current}
+                        locationName={locationName}
+                      />
+                    </CardErrorBoundary>
                   )}
 
-                  <Suspense fallback={<LoadingSpinner className="h-48" />}>
-                    {weather && <SprayWindows hourly={weather.hourly} />}
-                  </Suspense>
+                  <CardErrorBoundary cardName="Finestre trattamento">
+                    <Suspense fallback={<LoadingSpinner className="h-48" />}>
+                      {weather && <SprayWindows hourly={weather.hourly} />}
+                    </Suspense>
+                  </CardErrorBoundary>
                 </div>
               )}
 
@@ -300,10 +310,18 @@ export function Dashboard() {
                     </>
                   ) : (
                     <Suspense fallback={<LoadingSpinner className="h-64" />}>
-                      <TemperatureChart daily={weather.daily} />
-                      <PrecipitationChart daily={weather.daily} />
-                      <EvapotranspirationChart daily={weather.daily} />
-                      <SunshineCard daily={weather.daily} />
+                      <CardErrorBoundary cardName="Grafico temperature">
+                        <TemperatureChart daily={weather.daily} />
+                      </CardErrorBoundary>
+                      <CardErrorBoundary cardName="Grafico precipitazioni">
+                        <PrecipitationChart daily={weather.daily} />
+                      </CardErrorBoundary>
+                      <CardErrorBoundary cardName="Grafico evapotraspirazione">
+                        <EvapotranspirationChart daily={weather.daily} />
+                      </CardErrorBoundary>
+                      <CardErrorBoundary cardName="Ore di sole">
+                        <SunshineCard daily={weather.daily} />
+                      </CardErrorBoundary>
                     </Suspense>
                   )}
                 </div>
@@ -320,9 +338,15 @@ export function Dashboard() {
                     </>
                   ) : (
                     <Suspense fallback={<LoadingSpinner className="h-48" />}>
-                      <GrowingDegreeDays daily={weather.daily} />
-                      <ChillingHoursCard hourly={weather.hourly} />
-                      <EvapotranspirationCard daily={weather.daily} />
+                      <CardErrorBoundary cardName="Gradi Giorno">
+                        <GrowingDegreeDays daily={weather.daily} />
+                      </CardErrorBoundary>
+                      <CardErrorBoundary cardName="Ore di freddo">
+                        <ChillingHoursCard hourly={weather.hourly} />
+                      </CardErrorBoundary>
+                      <CardErrorBoundary cardName="Evapotraspirazione">
+                        <EvapotranspirationCard daily={weather.daily} />
+                      </CardErrorBoundary>
                     </Suspense>
                   )}
                 </div>
@@ -339,9 +363,15 @@ export function Dashboard() {
                     </>
                   ) : (
                     <Suspense fallback={<LoadingSpinner />}>
-                      <FrostAlert daily={weather.daily} />
-                      <WindAlert daily={weather.daily} />
-                      <DiseaseRiskCard hourly={weather.hourly} />
+                      <CardErrorBoundary cardName="Alert gelate">
+                        <FrostAlert daily={weather.daily} />
+                      </CardErrorBoundary>
+                      <CardErrorBoundary cardName="Alert vento">
+                        <WindAlert daily={weather.daily} />
+                      </CardErrorBoundary>
+                      <CardErrorBoundary cardName="Rischio malattie">
+                        <DiseaseRiskCard hourly={weather.hourly} />
+                      </CardErrorBoundary>
                     </Suspense>
                   )}
 
