@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNowcasting } from "@/hooks/useNowcasting";
 import {
   CloudRain,
   Umbrella,
@@ -10,7 +10,6 @@ import {
   Clock,
   RefreshCw,
 } from "lucide-react";
-import { getNowcastingData, NowcastingResponse } from "@/lib/api/nowcasting";
 
 interface NowcastingCardProps {
   latitude: number;
@@ -25,33 +24,10 @@ interface PrecipitationSlot {
 }
 
 export function NowcastingCard({ latitude, longitude }: NowcastingCardProps) {
-  const [data, setData] = useState<NowcastingResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
-
-  const fetchData = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await getNowcastingData(latitude, longitude);
-      setData(result);
-      setLastUpdate(new Date());
-    } catch (err) {
-      setError("Impossibile caricare nowcasting");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-    // Aggiorna ogni 5 minuti
-    const interval = setInterval(fetchData, 5 * 60 * 1000);
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [latitude, longitude]);
+  const { data, loading, error, lastUpdated, refetch } = useNowcasting(
+    latitude,
+    longitude,
+  );
 
   if (loading && !data) {
     return (
@@ -91,7 +67,7 @@ export function NowcastingCard({ latitude, longitude }: NowcastingCardProps) {
       }),
     }))
     .filter((slot) => slot.time >= now)
-    .slice(0, 8); // Prossimi 2 ore
+    .slice(0, 8);
 
   // Calcola quando pioverà
   const firstRainSlot = slots.find(
@@ -163,15 +139,17 @@ export function NowcastingCard({ latitude, longitude }: NowcastingCardProps) {
             <CloudRain className="h-5 w-5 text-blue-500" />
             Nowcasting Precipitazioni
           </CardTitle>
-          {lastUpdate && (
-            <span className="text-xs text-slate-400 flex items-center gap-1">
-              <Clock className="h-3 w-3" />
-              {lastUpdate.toLocaleTimeString("it-IT", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </span>
-          )}
+          <button
+            onClick={() => refetch()}
+            className="text-xs text-slate-400 flex items-center gap-1 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+          >
+            <Clock className="h-3 w-3" />
+            {lastUpdated?.toLocaleTimeString("it-IT", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+            <RefreshCw className="h-3 w-3" />
+          </button>
         </div>
       </CardHeader>
       <CardContent>
