@@ -3,7 +3,7 @@
 import { useState, lazy, Suspense } from "react";
 import { useGeolocation, DEFAULT_COORDS } from "@/hooks/useGeolocation";
 import { useWeather } from "@/hooks/useWeather";
-import { useSavedCities, SavedCity } from "@/hooks/useSavedCities";
+import { useSyncedCities, SyncedCity } from "@/hooks/useSyncedCities";
 import { WeatherCard } from "@/components/weather/WeatherCard";
 import { SearchCity } from "@/components/weather/SearchCity";
 import { SavedCities } from "@/components/layout/SavedCities";
@@ -139,7 +139,7 @@ export function Dashboard() {
     requestPosition,
   } = useGeolocation();
 
-  const { cities, addCity, removeCity, isSaved } = useSavedCities();
+  const { cities, addCity, removeCity, isSaved } = useSyncedCities();
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
     null,
   );
@@ -155,7 +155,7 @@ export function Dashboard() {
     longitude,
   );
 
-  function handleCitySelect(city: GeocodingResult | SavedCity) {
+  function handleCitySelect(city: GeocodingResult | SyncedCity) {
     setSelectedLocation({
       latitude: city.latitude,
       longitude: city.longitude,

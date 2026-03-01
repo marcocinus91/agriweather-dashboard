@@ -1,40 +1,45 @@
 "use client";
 
-import { SavedCity } from "@/hooks/useSavedCities";
-import { Button } from "@/components/ui/button";
+import { X, MapPin } from "lucide-react";
+
+interface City {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  country: string;
+}
 
 interface SavedCitiesProps {
-  cities: SavedCity[];
-  onSelect: (city: SavedCity) => void;
-  onRemove: (id: number) => void;
+  cities: City[];
+  onSelect: (city: City) => void;
+  onRemove: (id: string) => void;
 }
 
 export function SavedCities({ cities, onSelect, onRemove }: SavedCitiesProps) {
-  if (cities.length === 0) {
-    return null;
-  }
+  if (cities.length === 0) return null;
 
   return (
     <div className="flex flex-wrap gap-2">
       {cities.map((city) => (
         <div
           key={city.id}
-          className="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 rounded-full pl-3 pr-1 py-1 text-sm"
+          className="flex items-center gap-1 px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded-full text-sm"
         >
           <button
             onClick={() => onSelect(city)}
-            className="hover:text-blue-600 dark:hover:text-blue-400 max-w-30 truncate"
+            className="flex items-center gap-1 hover:text-green-600 dark:hover:text-green-400 transition-colors"
           >
+            <MapPin className="h-3 w-3" />
             {city.name}
           </button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-5 w-5 p-0 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+          <button
             onClick={() => onRemove(city.id)}
+            className="p-0.5 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-full transition-colors"
+            aria-label={`Rimuovi ${city.name}`}
           >
-            ×
-          </Button>
+            <X className="h-3 w-3" />
+          </button>
         </div>
       ))}
     </div>
