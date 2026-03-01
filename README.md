@@ -18,16 +18,25 @@ L'applicazione integra previsioni meteo ad alta risoluzione con indicatori agrom
 
 ## Funzionalità
 
+### Autenticazione e Persistenza
+
+| Funzionalità        | Descrizione                                             |
+| ------------------- | ------------------------------------------------------- |
+| **Login**           | Autenticazione con email o Google OAuth                 |
+| **Città Salvate**   | Sincronizzazione tra dispositivi per utenti autenticati |
+| **Preferenze**      | Impostazioni colture e località salvate nel database    |
+| **Fallback Locale** | localStorage per utenti non autenticati                 |
+
 ### Navigazione a Tab
 
-L'interfaccia è organizzata in 4 sezioni per accesso rapido alle informazioni:
+L'interfaccia è organizzata in 4 sezioni per accesso rapido:
 
-| Tab           | Contenuto                                            |
-| ------------- | ---------------------------------------------------- |
-| **Oggi**      | Nowcasting, meteo attuale, finestre di trattamento   |
-| **Settimana** | Grafici temperature, precipitazioni, ET, ore di sole |
-| **Colture**   | Gradi Giorno, ore di freddo, evapotraspirazione      |
-| **Rischi**    | Alert gelate, vento, malattie fungine                |
+| Tab           | Contenuto                                                  |
+| ------------- | ---------------------------------------------------------- |
+| **Oggi**      | Nowcasting, meteo attuale, finestre di trattamento         |
+| **Settimana** | Grafici temperature, precipitazioni, ET, ore di sole       |
+| **Colture**   | Gradi Giorno stagionali, ore di freddo, evapotraspirazione |
+| **Rischi**    | Alert gelate, vento, malattie fungine                      |
 
 ### Nowcasting e Previsioni
 
@@ -38,14 +47,13 @@ L'interfaccia è organizzata in 4 sezioni per accesso rapido alle informazioni:
 | **Previsioni 7 Giorni**       | Dati orari e giornalieri con grafici interattivi                   |
 | **Auto-refresh**              | Nowcasting aggiornato automaticamente ogni 5 minuti                |
 
-### Localizzazione e Mappa
+### Dati Storici Stagionali
 
-| Funzionalità          | Descrizione                               |
-| --------------------- | ----------------------------------------- |
-| **Mappa Interattiva** | Visualizzazione geografica con Leaflet.js |
-| **Geolocalizzazione** | Rilevamento automatico posizione          |
-| **Ricerca Città**     | Autocomplete per qualsiasi località       |
-| **Città Salvate**     | Fino a 5 località preferite               |
+| Funzionalità          | Descrizione                                                  |
+| --------------------- | ------------------------------------------------------------ |
+| **GDD Stagionali**    | Gradi Giorno accumulati dall'inizio della stagione colturale |
+| **Ore di Freddo**     | Accumulo dal 1° ottobre per vernalizzazione frutticoltura    |
+| **Confronto Storico** | Dati reali da Open-Meteo Archive API                         |
 
 ### Indicatori Agrometeorologici
 
@@ -66,14 +74,13 @@ L'interfaccia è organizzata in 4 sezioni per accesso rapido alle informazioni:
 | **Wind Alert**        | Vento > 30 / 40 / 60 km/h            |
 | **Rischio Malattie**  | Peronospora, Oidio, Botrite, Ruggine |
 
-### Strumenti Decisionali
+### Onboarding
 
-| Strumento                | Funzione                                                     |
-| ------------------------ | ------------------------------------------------------------ |
-| **Spray Windows**        | Finestre ottimali per trattamenti                            |
-| **Consigli Irrigazione** | Raccomandazioni basate su ET                                 |
-| **Selezione Coltura**    | GDD per Mais, Grano, Pomodoro, Vite, Girasole                |
-| **Vernalizzazione**      | Progresso per Melo, Pero, Pesco, Ciliegio, Albicocco, Susino |
+| Funzionalità         | Descrizione                                         |
+| -------------------- | --------------------------------------------------- |
+| **Tour Guidato**     | Introduzione alle funzionalità per nuovi utenti     |
+| **Hint Contestuali** | Suggerimenti nei tab con possibilità di chiusura    |
+| **Persistenza**      | Preferenze salvate, non riappare dopo completamento |
 
 ---
 
@@ -81,19 +88,32 @@ L'interfaccia è organizzata in 4 sezioni per accesso rapido alle informazioni:
 
 ### Stack Tecnologico
 
-| Categoria         | Tecnologia                 |
-| ----------------- | -------------------------- |
-| **Framework**     | Next.js 14 (App Router)    |
-| **Linguaggio**    | TypeScript (strict mode)   |
-| **Styling**       | Tailwind CSS               |
-| **Componenti UI** | shadcn/ui                  |
-| **Mappe**         | Leaflet.js (react-leaflet) |
-| **Grafici**       | Recharts                   |
-| **Icone**         | Lucide React               |
-| **Data Fetching** | TanStack React Query       |
-| **Testing**       | Vitest                     |
-| **API Meteo**     | Open-Meteo                 |
-| **Deploy**        | Vercel                     |
+| Categoria          | Tecnologia                                |
+| ------------------ | ----------------------------------------- |
+| **Framework**      | Next.js 14 (App Router)                   |
+| **Linguaggio**     | TypeScript (strict mode)                  |
+| **Styling**        | Tailwind CSS                              |
+| **Componenti UI**  | shadcn/ui                                 |
+| **Mappe**          | Leaflet.js (react-leaflet)                |
+| **Grafici**        | Recharts                                  |
+| **Icone**          | Lucide React                              |
+| **Data Fetching**  | TanStack React Query                      |
+| **Autenticazione** | NextAuth.js v5                            |
+| **Database**       | Prisma + SQLite (dev) / PostgreSQL (prod) |
+| **Testing**        | Vitest                                    |
+| **API Meteo**      | Open-Meteo                                |
+| **Deploy**         | Vercel                                    |
+
+### Backend API
+
+| Endpoint           | Descrizione           | Cache  |
+| ------------------ | --------------------- | ------ |
+| `/api/weather`     | Previsioni meteo      | 10 min |
+| `/api/nowcasting`  | Precipitazioni 15 min | 5 min  |
+| `/api/historical`  | Dati storici          | 1 ora  |
+| `/api/cities`      | Città salvate utente  | -      |
+| `/api/preferences` | Preferenze utente     | -      |
+| `/api/crops`       | Impostazioni colture  | -      |
 
 ### Ottimizzazioni Performance
 
@@ -101,8 +121,18 @@ L'interfaccia è organizzata in 4 sezioni per accesso rapido alle informazioni:
 | -------------------- | ----------------------------------------------- |
 | **Lazy Loading**     | Componenti caricati on-demand per tab           |
 | **React Query**      | Cache automatica, retry, stale-while-revalidate |
+| **API Caching**      | Riduce chiamate a Open-Meteo                    |
 | **Error Boundaries** | Crash isolati per componente                    |
 | **Code Splitting**   | Bundle iniziale ridotto                         |
+
+### Database Schema
+
+```prisma
+User
+├── SavedCity[]      # Città preferite (max 5)
+├── CropSetting[]    # Impostazioni colture personalizzate
+└── UserPreferences  # Preferenze app (tema, località default, ecc.)
+```
 
 ### Testing
 
@@ -115,21 +145,53 @@ npm run test:run # Single run
 
 - Calcolo Gradi Giorno (GDD)
 - Ore di freddo e Chill Units (modello Utah)
-- Rischio malattie fungine (Peronospora, Oidio, Botrite, Ruggine)
+- Rischio malattie fungine
 - Stima bagnatura fogliare
 
 ---
 
 ## Installazione
 
+### Requisiti
+
+- Node.js 18+
+- npm o yarn
+
+### Setup
+
 ```bash
+# Clona il repository
 git clone https://github.com/YOUR-USERNAME/agriweather-dashboard.git
 cd agriweather-dashboard
+
+# Installa le dipendenze
 npm install
+
+# Configura le variabili d'ambiente
+cp .env.example .env
+
+# Inizializza il database
+npx prisma db push
+
+# Avvia il server di sviluppo
 npm run dev
 ```
 
 Apri [http://localhost:3000](http://localhost:3000)
+
+### Variabili d'Ambiente
+
+```env
+# Database
+DATABASE_URL="file:./dev.db"
+
+# NextAuth
+AUTH_SECRET="your-secret-key"
+
+# Google OAuth (opzionale)
+AUTH_GOOGLE_ID="your-google-client-id"
+AUTH_GOOGLE_SECRET="your-google-client-secret"
+```
 
 ---
 
@@ -137,51 +199,75 @@ Apri [http://localhost:3000](http://localhost:3000)
 
 ```
 src/
-├── app/                          # Next.js App Router
+├── app/
+│   ├── api/                      # API Routes
+│   │   ├── auth/[...nextauth]/   # NextAuth handlers
+│   │   ├── weather/              # Meteo con cache
+│   │   ├── nowcasting/           # Nowcasting con cache
+│   │   ├── historical/           # Dati storici con cache
+│   │   ├── cities/               # CRUD città utente
+│   │   ├── preferences/          # Preferenze utente
+│   │   └── crops/                # Impostazioni colture
+│   ├── login/                    # Pagina login
+│   ├── layout.tsx
+│   └── page.tsx
 ├── components/
 │   ├── charts/                   # Grafici Recharts
 │   ├── error/                    # Error Boundaries
 │   ├── layout/                   # Navbar, SavedCities
 │   ├── map/                      # Mappa Leaflet
-│   ├── providers/                # React Query Provider
+│   ├── onboarding/               # Tour e hints
+│   ├── providers/                # React Query, Session
 │   ├── ui/                       # shadcn/ui + Tabs
 │   └── weather/                  # Componenti agrometeo
 ├── hooks/                        # Custom hooks
 ├── lib/
 │   ├── agro/                     # Modelli agronomici (testati)
-│   │   ├── gdd.ts
-│   │   ├── chilling.ts
-│   │   └── disease.ts
-│   └── api/                      # Client API
+│   ├── api/                      # Client API
+│   ├── auth.ts                   # Configurazione NextAuth
+│   └── db.ts                     # Client Prisma
 ├── test/                         # Test unitari
 └── types/                        # TypeScript interfaces
+
+prisma/
+└── schema.prisma                 # Schema database
 ```
 
 ---
 
-## API e Dati
+## Deploy
 
-API gratuite di [Open-Meteo](https://open-meteo.com/), nessuna API key richiesta.
+### Vercel (Raccomandato)
 
-### Endpoint
+1. Importa il repository su Vercel
+2. Configura le variabili d'ambiente
+3. Per produzione, usa PostgreSQL (Vercel Postgres, Supabase, ecc.)
 
-| Endpoint       | Descrizione         | Refresh            |
-| -------------- | ------------------- | ------------------ |
-| **Forecast**   | Previsioni 7 giorni | Cache 10 min       |
-| **Nowcasting** | Previsioni 15 min   | Auto-refresh 5 min |
-| **Geocoding**  | Ricerca località    | On-demand          |
+```env
+DATABASE_URL="postgresql://..."
+AUTH_SECRET="..."
+AUTH_GOOGLE_ID="..."
+AUTH_GOOGLE_SECRET="..."
+```
 
-### Parametri
+### Database Produzione
 
-| Parametro                    | Componente                         |
-| ---------------------------- | ---------------------------------- |
-| `temperature_2m`             | WeatherCard, GDD, Grafici          |
-| `precipitation`              | Nowcasting, Grafici, Spray Windows |
-| `wind_speed_10m`             | Wind Alert, Spray Windows          |
-| `relative_humidity_2m`       | Disease Risk, Spray Windows        |
-| `dew_point_2m`               | Bagnatura fogliare                 |
-| `et0_fao_evapotranspiration` | Irrigazione                        |
-| `sunshine_duration`          | Ore di sole                        |
+Per migrare da SQLite a PostgreSQL:
+
+1. Aggiorna `prisma/schema.prisma`:
+
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+```
+
+2. Esegui la migrazione:
+
+```bash
+npx prisma migrate dev
+```
 
 ---
 
@@ -222,15 +308,6 @@ GDD = max(0, ((Tmax + Tmin) / 2) - Tbase)
 | Botrite     | T 15-25°C, UR > 85%, bagnatura > 8h  |
 | Ruggine     | T 15-25°C, bagnatura > 8h            |
 
-### Spray Windows
-
-Condizioni ottimali:
-
-- Vento < 15 km/h
-- Probabilità pioggia < 30%
-- Temperatura 5-30°C
-- Umidità 40-90%
-
 ---
 
 ## Roadmap
@@ -242,10 +319,15 @@ Condizioni ottimali:
 - [x] Mappa interattiva
 - [x] Alert (gelate, vento, malattie)
 - [x] Indicatori agrometeo (ET₀, GDD, Chilling Hours)
+- [x] Dati storici stagionali
 - [x] Spray Windows
 - [x] UI a tab
 - [x] Lazy loading
 - [x] React Query caching
+- [x] Backend API con cache
+- [x] Autenticazione (NextAuth)
+- [x] Database (Prisma)
+- [x] Onboarding tour
 - [x] Error boundaries
 - [x] Test unitari (49)
 - [x] Dark mode
@@ -253,10 +335,10 @@ Condizioni ottimali:
 ### Prossimi Step
 
 - [ ] PWA con notifiche push
-- [ ] Storico meteo stagionale
 - [ ] Profili colturali personalizzabili
 - [ ] Export report PDF
 - [ ] Multi-lingua
+- [ ] Integrazione sensori IoT
 
 ---
 
@@ -278,6 +360,8 @@ MIT License - vedi `LICENSE`
 ## Riferimenti
 
 - [Open-Meteo API](https://open-meteo.com/en/docs)
+- [NextAuth.js](https://authjs.dev/)
+- [Prisma](https://www.prisma.io/)
 - [FAO Evapotranspiration](https://www.fao.org/3/x0490e/x0490e00.htm)
 - [Utah Chill Unit Model](https://extension.usu.edu/fruit/research/chill-units)
 - [Growing Degree Days - NOAA](https://www.weather.gov/ama/gdd)
