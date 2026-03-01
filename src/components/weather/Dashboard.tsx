@@ -339,10 +339,17 @@ export function Dashboard() {
                   ) : (
                     <Suspense fallback={<LoadingSpinner className="h-48" />}>
                       <CardErrorBoundary cardName="Gradi Giorno">
-                        <GrowingDegreeDays daily={weather.daily} />
+                        <GrowingDegreeDays
+                          daily={weather.daily}
+                          latitude={latitude}
+                          longitude={longitude}
+                        />
                       </CardErrorBoundary>
                       <CardErrorBoundary cardName="Ore di freddo">
-                        <ChillingHoursCard hourly={weather.hourly} />
+                        <ChillingHoursCard
+                          latitude={latitude}
+                          longitude={longitude}
+                        />
                       </CardErrorBoundary>
                       <CardErrorBoundary cardName="Evapotraspirazione">
                         <EvapotranspirationCard daily={weather.daily} />
