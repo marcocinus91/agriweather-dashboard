@@ -10,28 +10,15 @@ export interface HistoricalResponse {
   };
 }
 
-const BASE_URL = "https://archive-api.open-meteo.com/v1/archive";
-
-/**
- * Recupera dati meteo storici per un periodo specifico
- */
 export async function getHistoricalData(
   latitude: number,
   longitude: number,
-  startDate: string, // formato YYYY-MM-DD
+  startDate: string,
   endDate: string,
 ): Promise<HistoricalResponse> {
-  const params = new URLSearchParams({
-    latitude: latitude.toString(),
-    longitude: longitude.toString(),
-    start_date: startDate,
-    end_date: endDate,
-    daily:
-      "temperature_2m_max,temperature_2m_min,precipitation_sum,et0_fao_evapotranspiration",
-    timezone: "auto",
-  });
-
-  const response = await fetch(`${BASE_URL}?${params}`);
+  const response = await fetch(
+    `/api/historical?lat=${latitude}&lon=${longitude}&start=${startDate}&end=${endDate}`,
+  );
 
   if (!response.ok) {
     throw new Error(`Errore API Historical: ${response.status}`);
@@ -40,10 +27,6 @@ export async function getHistoricalData(
   return response.json();
 }
 
-/**
- * Recupera dati storici per calcolo GDD stagionale
- * Dalla data di semina (o inizio stagione) ad oggi
- */
 export async function getSeasonalGDDData(
   latitude: number,
   longitude: number,
@@ -55,10 +38,6 @@ export async function getSeasonalGDDData(
   return getHistoricalData(latitude, longitude, seasonStartDate, endDate);
 }
 
-/**
- * Recupera dati storici per calcolo Chilling Hours
- * Dall'inizio dell'autunno (1 ottobre) ad oggi
- */
 export async function getChillingSeasonData(
   latitude: number,
   longitude: number,
@@ -66,15 +45,12 @@ export async function getChillingSeasonData(
   const today = new Date();
   const year =
     today.getMonth() >= 9 ? today.getFullYear() : today.getFullYear() - 1;
-  const startDate = `${year}-10-01`; // 1 ottobre
+  const startDate = `${year}-10-01`;
   const endDate = today.toISOString().split("T")[0];
 
   return getHistoricalData(latitude, longitude, startDate, endDate);
 }
 
-/**
- * Recupera dati dello stesso periodo dell'anno precedente per confronto
- */
 export async function getLastYearComparison(
   latitude: number,
   longitude: number,
