@@ -77,6 +77,11 @@ const DiseaseRiskCard = lazy(() =>
     default: mod.DiseaseRiskCard,
   })),
 );
+const CropSettingsCard = lazy(() =>
+  import("./CropSettingsCard").then((mod) => ({
+    default: mod.CropSettingsCard,
+  })),
+);
 
 interface Location {
   latitude: number;
@@ -375,6 +380,7 @@ export function Dashboard() {
                         <Skeleton className="h-48" />
                         <Skeleton className="h-64" />
                         <Skeleton className="h-40" />
+                        <Skeleton className="h-48" />
                       </>
                     ) : (
                       <Suspense fallback={<LoadingSpinner className="h-48" />}>
@@ -393,6 +399,9 @@ export function Dashboard() {
                         </CardErrorBoundary>
                         <CardErrorBoundary cardName="Evapotraspirazione">
                           <EvapotranspirationCard daily={weather.daily} />
+                        </CardErrorBoundary>
+                        <CardErrorBoundary cardName="Colture personalizzate">
+                          <CropSettingsCard />
                         </CardErrorBoundary>
                       </Suspense>
                     )}
