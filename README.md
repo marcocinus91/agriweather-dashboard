@@ -4,7 +4,7 @@ Dashboard meteo professionale per agricoltori con supporto decisionale per irrig
 
 **[Demo Live](https://agriweather-dashboard.vercel.app/)**
 
-![Status](https://img.shields.io/badge/Status-Live-brightgreen) ![Next.js](https://img.shields.io/badge/Next.js-14-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Test](https://img.shields.io/badge/Tests-49%20passed-success) ![License](https://img.shields.io/badge/License-MIT-yellow)
+![Status](https://img.shields.io/badge/Status-Production-brightgreen) ![Next.js](https://img.shields.io/badge/Next.js-14-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Test](https://img.shields.io/badge/Tests-49%20passed-success) ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
 
@@ -20,23 +20,24 @@ L'applicazione integra previsioni meteo ad alta risoluzione con indicatori agrom
 
 ### Autenticazione e Persistenza
 
-| Funzionalità        | Descrizione                                             |
-| ------------------- | ------------------------------------------------------- |
-| **Login**           | Autenticazione con email o Google OAuth                 |
-| **Città Salvate**   | Sincronizzazione tra dispositivi per utenti autenticati |
-| **Preferenze**      | Impostazioni colture e località salvate nel database    |
-| **Fallback Locale** | localStorage per utenti non autenticati                 |
+| Funzionalità               | Descrizione                                             |
+| -------------------------- | ------------------------------------------------------- |
+| **Google OAuth**           | Autenticazione sicura con account Google                |
+| **Città Salvate**          | Sincronizzazione tra dispositivi (max 5 località)       |
+| **Colture Personalizzate** | Configurazione custom di Tbase, GDD target, data inizio |
+| **Preferenze**             | Impostazioni salvate nel database PostgreSQL            |
+| **Fallback Locale**        | localStorage per utenti non autenticati                 |
 
 ### Navigazione a Tab
 
 L'interfaccia è organizzata in 4 sezioni per accesso rapido:
 
-| Tab           | Contenuto                                                  |
-| ------------- | ---------------------------------------------------------- |
-| **Oggi**      | Nowcasting, meteo attuale, finestre di trattamento         |
-| **Settimana** | Grafici temperature, precipitazioni, ET, ore di sole       |
-| **Colture**   | Gradi Giorno stagionali, ore di freddo, evapotraspirazione |
-| **Rischi**    | Alert gelate, vento, malattie fungine                      |
+| Tab           | Contenuto                                                                  |
+| ------------- | -------------------------------------------------------------------------- |
+| **Oggi**      | Nowcasting, meteo attuale, finestre di trattamento                         |
+| **Settimana** | Grafici temperature, precipitazioni, ET, ore di sole                       |
+| **Colture**   | Gradi Giorno stagionali, ore di freddo, evapotraspirazione, colture custom |
+| **Rischi**    | Alert gelate, vento, malattie fungine con badge contatore                  |
 
 ### Nowcasting e Previsioni
 
@@ -54,6 +55,7 @@ L'interfaccia è organizzata in 4 sezioni per accesso rapido:
 | **GDD Stagionali**    | Gradi Giorno accumulati dall'inizio della stagione colturale |
 | **Ore di Freddo**     | Accumulo dal 1° ottobre per vernalizzazione frutticoltura    |
 | **Confronto Storico** | Dati reali da Open-Meteo Archive API                         |
+| **Stima Maturazione** | Calcolo automatico giorni rimanenti basato su media GDD      |
 
 ### Indicatori Agrometeorologici
 
@@ -74,13 +76,15 @@ L'interfaccia è organizzata in 4 sezioni per accesso rapido:
 | **Wind Alert**        | Vento > 30 / 40 / 60 km/h            |
 | **Rischio Malattie**  | Peronospora, Oidio, Botrite, Ruggine |
 
-### Onboarding
+### User Experience
 
-| Funzionalità         | Descrizione                                         |
-| -------------------- | --------------------------------------------------- |
-| **Tour Guidato**     | Introduzione alle funzionalità per nuovi utenti     |
-| **Hint Contestuali** | Suggerimenti nei tab con possibilità di chiusura    |
-| **Persistenza**      | Preferenze salvate, non riappare dopo completamento |
+| Funzionalità            | Descrizione                                      |
+| ----------------------- | ------------------------------------------------ |
+| **Onboarding Tour**     | Introduzione guidata in 6 step per nuovi utenti  |
+| **Hint Contestuali**    | Suggerimenti nei tab con possibilità di chiusura |
+| **Toast Notifications** | Feedback visivo su azioni (salvataggio, errori)  |
+| **Conferma Azioni**     | Modal di conferma per azioni distruttive         |
+| **Dark Mode**           | Tema scuro automatico                            |
 
 ---
 
@@ -88,32 +92,35 @@ L'interfaccia è organizzata in 4 sezioni per accesso rapido:
 
 ### Stack Tecnologico
 
-| Categoria          | Tecnologia                                |
-| ------------------ | ----------------------------------------- |
-| **Framework**      | Next.js 14 (App Router)                   |
-| **Linguaggio**     | TypeScript (strict mode)                  |
-| **Styling**        | Tailwind CSS                              |
-| **Componenti UI**  | shadcn/ui                                 |
-| **Mappe**          | Leaflet.js (react-leaflet)                |
-| **Grafici**        | Recharts                                  |
-| **Icone**          | Lucide React                              |
-| **Data Fetching**  | TanStack React Query                      |
-| **Autenticazione** | NextAuth.js v5                            |
-| **Database**       | Prisma + SQLite (dev) / PostgreSQL (prod) |
-| **Testing**        | Vitest                                    |
-| **API Meteo**      | Open-Meteo                                |
-| **Deploy**         | Vercel                                    |
+| Categoria          | Tecnologia                    |
+| ------------------ | ----------------------------- |
+| **Framework**      | Next.js 14 (App Router)       |
+| **Linguaggio**     | TypeScript (strict mode)      |
+| **Styling**        | Tailwind CSS                  |
+| **Componenti UI**  | shadcn/ui                     |
+| **Mappe**          | Leaflet.js (react-leaflet)    |
+| **Grafici**        | Recharts                      |
+| **Icone**          | Lucide React                  |
+| **Data Fetching**  | TanStack React Query          |
+| **Autenticazione** | NextAuth.js v5 (Google OAuth) |
+| **Database**       | Prisma + Neon PostgreSQL      |
+| **Validazione**    | Zod                           |
+| **Notifiche**      | Sonner                        |
+| **Testing**        | Vitest                        |
+| **API Meteo**      | Open-Meteo                    |
+| **Deploy**         | Vercel                        |
 
 ### Backend API
 
-| Endpoint           | Descrizione           | Cache  |
-| ------------------ | --------------------- | ------ |
-| `/api/weather`     | Previsioni meteo      | 10 min |
-| `/api/nowcasting`  | Precipitazioni 15 min | 5 min  |
-| `/api/historical`  | Dati storici          | 1 ora  |
-| `/api/cities`      | Città salvate utente  | -      |
-| `/api/preferences` | Preferenze utente     | -      |
-| `/api/crops`       | Impostazioni colture  | -      |
+| Endpoint           | Descrizione           | Cache  | Validazione |
+| ------------------ | --------------------- | ------ | ----------- |
+| `/api/weather`     | Previsioni meteo      | 10 min | Zod         |
+| `/api/nowcasting`  | Precipitazioni 15 min | 5 min  | Zod         |
+| `/api/historical`  | Dati storici          | 1 ora  | Zod         |
+| `/api/cities`      | CRUD città utente     | -      | Zod         |
+| `/api/preferences` | Preferenze utente     | -      | -           |
+| `/api/crops`       | CRUD colture custom   | -      | Zod         |
+| `/api/auth/*`      | NextAuth handlers     | -      | -           |
 
 ### Ottimizzazioni Performance
 
@@ -129,9 +136,11 @@ L'interfaccia è organizzata in 4 sezioni per accesso rapido:
 
 ```prisma
 User
+├── Account[]        # OAuth providers
+├── Session[]        # Sessioni attive
 ├── SavedCity[]      # Città preferite (max 5)
-├── CropSetting[]    # Impostazioni colture personalizzate
-└── UserPreferences  # Preferenze app (tema, località default, ecc.)
+├── CropSetting[]    # Colture personalizzate
+└── UserPreferences  # Preferenze app
 ```
 
 ### Testing
@@ -156,8 +165,10 @@ npm run test:run # Single run
 
 - Node.js 18+
 - npm o yarn
+- Account Google Cloud (per OAuth)
+- Database PostgreSQL (Neon consigliato)
 
-### Setup
+### Setup Locale
 
 ```bash
 # Clona il repository
@@ -170,7 +181,8 @@ npm install
 # Configura le variabili d'ambiente
 cp .env.example .env
 
-# Inizializza il database
+# Genera il client Prisma e sincronizza il database
+npx prisma generate
 npx prisma db push
 
 # Avvia il server di sviluppo
@@ -182,16 +194,25 @@ Apri [http://localhost:3000](http://localhost:3000)
 ### Variabili d'Ambiente
 
 ```env
-# Database
-DATABASE_URL="file:./dev.db"
+# Database (Neon PostgreSQL)
+DATABASE_URL="postgresql://username:password@ep-xxx.neon.tech/neondb?sslmode=require"
 
 # NextAuth
-AUTH_SECRET="your-secret-key"
+AUTH_SECRET="genera-con-npx-auth-secret"
 
-# Google OAuth (opzionale)
+# Google OAuth
 AUTH_GOOGLE_ID="your-google-client-id"
 AUTH_GOOGLE_SECRET="your-google-client-secret"
 ```
+
+### Configurazione Google OAuth
+
+1. Vai su [Google Cloud Console](https://console.cloud.google.com/)
+2. Crea un progetto o selezionane uno esistente
+3. APIs & Services → Credentials → Create Credentials → OAuth client ID
+4. Aggiungi Authorized redirect URIs:
+   - `http://localhost:3000/api/auth/callback/google`
+   - `https://your-domain.vercel.app/api/auth/callback/google`
 
 ---
 
@@ -200,37 +221,39 @@ AUTH_GOOGLE_SECRET="your-google-client-secret"
 ```
 src/
 ├── app/
-│   ├── api/                      # API Routes
+│   ├── api/
 │   │   ├── auth/[...nextauth]/   # NextAuth handlers
-│   │   ├── weather/              # Meteo con cache
+│   │   ├── weather/              # Meteo con cache + validazione
 │   │   ├── nowcasting/           # Nowcasting con cache
 │   │   ├── historical/           # Dati storici con cache
 │   │   ├── cities/               # CRUD città utente
 │   │   ├── preferences/          # Preferenze utente
-│   │   └── crops/                # Impostazioni colture
-│   ├── login/                    # Pagina login
+│   │   └── crops/                # CRUD colture custom
+│   ├── login/                    # Pagina login Google
 │   ├── layout.tsx
 │   └── page.tsx
 ├── components/
+│   ├── auth/                     # LoginBanner
 │   ├── charts/                   # Grafici Recharts
 │   ├── error/                    # Error Boundaries
 │   ├── layout/                   # Navbar, SavedCities
 │   ├── map/                      # Mappa Leaflet
 │   ├── onboarding/               # Tour e hints
 │   ├── providers/                # React Query, Session
-│   ├── ui/                       # shadcn/ui + Tabs
+│   ├── ui/                       # shadcn/ui, ConfirmDialog, Tabs
 │   └── weather/                  # Componenti agrometeo
-├── hooks/                        # Custom hooks
+├── hooks/                        # Custom hooks (useWeather, useCrops, etc.)
 ├── lib/
 │   ├── agro/                     # Modelli agronomici (testati)
 │   ├── api/                      # Client API
 │   ├── auth.ts                   # Configurazione NextAuth
-│   └── db.ts                     # Client Prisma
+│   ├── db.ts                     # Client Prisma
+│   └── validations.ts            # Schema Zod
 ├── test/                         # Test unitari
 └── types/                        # TypeScript interfaces
 
 prisma/
-└── schema.prisma                 # Schema database
+└── schema.prisma                 # Schema database PostgreSQL
 ```
 
 ---
@@ -240,33 +263,18 @@ prisma/
 ### Vercel (Raccomandato)
 
 1. Importa il repository su Vercel
-2. Configura le variabili d'ambiente
-3. Per produzione, usa PostgreSQL (Vercel Postgres, Supabase, ecc.)
+2. Aggiungi Storage → Neon Serverless Postgres
+3. Configura le Environment Variables:
+   - `DATABASE_URL` (auto da Neon)
+   - `AUTH_SECRET`
+   - `AUTH_GOOGLE_ID`
+   - `AUTH_GOOGLE_SECRET`
+4. Deploy automatico ad ogni push
 
-```env
-DATABASE_URL="postgresql://..."
-AUTH_SECRET="..."
-AUTH_GOOGLE_ID="..."
-AUTH_GOOGLE_SECRET="..."
-```
-
-### Database Produzione
-
-Per migrare da SQLite a PostgreSQL:
-
-1. Aggiorna `prisma/schema.prisma`:
-
-```prisma
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-```
-
-2. Esegui la migrazione:
+### Build Command
 
 ```bash
-npx prisma migrate dev
+prisma generate && prisma db push && next build
 ```
 
 ---
@@ -312,33 +320,38 @@ GDD = max(0, ((Tmax + Tmin) / 2) - Tbase)
 
 ## Roadmap
 
-### Completato
+### ✅ Completato
 
 - [x] Previsioni 7 giorni con grafici
 - [x] Nowcasting precipitazioni
 - [x] Mappa interattiva
 - [x] Alert (gelate, vento, malattie)
 - [x] Indicatori agrometeo (ET₀, GDD, Chilling Hours)
-- [x] Dati storici stagionali
+- [x] Dati storici stagionali (Open-Meteo Archive)
 - [x] Spray Windows
-- [x] UI a tab
-- [x] Lazy loading
+- [x] UI a tab con badge alert
+- [x] Lazy loading componenti
 - [x] React Query caching
-- [x] Backend API con cache
-- [x] Autenticazione (NextAuth)
-- [x] Database (Prisma)
+- [x] Backend API con cache e validazione Zod
+- [x] Autenticazione Google OAuth
+- [x] Database PostgreSQL (Neon + Prisma)
+- [x] CRUD città preferite
+- [x] CRUD colture personalizzate
 - [x] Onboarding tour
+- [x] Toast notifications
+- [x] Conferma azioni distruttive
 - [x] Error boundaries
 - [x] Test unitari (49)
 - [x] Dark mode
 
-### Prossimi Step
+### 🔜 Prossimi Step
 
+- [ ] Test E2E con Playwright
 - [ ] PWA con notifiche push
-- [ ] Profili colturali personalizzabili
 - [ ] Export report PDF
-- [ ] Multi-lingua
+- [ ] Multi-lingua (i18n)
 - [ ] Integrazione sensori IoT
+- [ ] Logging/monitoring (Sentry)
 
 ---
 
@@ -352,16 +365,14 @@ MIT License - vedi `LICENSE`
 
 **Marco** - Frontend Developer
 
-- [LinkedIn](https://linkedin.com/in/YOUR-PROFILE)
-- [GitHub](https://github.com/YOUR-USERNAME)
-
 ---
 
 ## Riferimenti
 
 - [Open-Meteo API](https://open-meteo.com/en/docs)
-- [NextAuth.js](https://authjs.dev/)
+- [NextAuth.js v5](https://authjs.dev/)
 - [Prisma](https://www.prisma.io/)
+- [Neon Serverless Postgres](https://neon.tech/)
 - [FAO Evapotranspiration](https://www.fao.org/3/x0490e/x0490e00.htm)
 - [Utah Chill Unit Model](https://extension.usu.edu/fruit/research/chill-units)
 - [Growing Degree Days - NOAA](https://www.weather.gov/ama/gdd)
