@@ -1,24 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useSyncExternalStore } from "react";
 import { useSession } from "next-auth/react";
 import { X, Cloud } from "lucide-react";
 import Link from "next/link";
 
 const STORAGE_KEY = "agriweather-login-banner-dismissed";
 
-export function LoginBanner() {
-  const { data: session } = useSession();
-  const [dismissed, setDismissed] = useState(() => {
-    if (typeof window === "undefined") return true;
-    return localStorage.getItem(STORAGE_KEY) === "true";
-  });
+function subscribe(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
 
+function getSnapshot(): boolean {
+  return localStorage.getItem(STORAGE_KEY) === "true";
+}
+
+function getServerSnapshot(): boolean {
+  return true; // Server: assume dismissed per evitare hydration mismatch
+}
+
+export function LoginBanner() {
+  const { data: session, status } = useSession();
+  const dismissed = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
+
+  if (status === "loading") return null;
   if (session || dismissed) return null;
 
   const handleDismiss = () => {
     localStorage.setItem(STORAGE_KEY, "true");
-    setDismissed(true);
+    window.dispatchEvent(new Event("storage"));
   };
 
   return (
