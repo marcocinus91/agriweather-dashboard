@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useSavedCities } from "./useSavedCities";
+import { toast } from "sonner";
 
 export interface SyncedCity {
   id: string;
@@ -57,8 +58,12 @@ export function useSyncedCities() {
       }
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["saved-cities"] });
+      toast.success(`${variables.name} aggiunta ai preferiti`);
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Errore nel salvataggio");
     },
   });
 
@@ -73,6 +78,10 @@ export function useSyncedCities() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["saved-cities"] });
+      toast.success("Città rimossa dai preferiti");
+    },
+    onError: () => {
+      toast.error("Errore nella rimozione");
     },
   });
 
@@ -116,6 +125,7 @@ export function useSyncedCities() {
         longitude: city.longitude,
         country: city.country || "",
       });
+      toast.success(`${city.name} aggiunta ai preferiti`);
     }
   };
 
@@ -125,6 +135,7 @@ export function useSyncedCities() {
       removeMutation.mutate(id);
     } else {
       localCities.removeCity(Number(id));
+      toast.success("Città rimossa dai preferiti");
     }
   };
 

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { coordinatesSchema, dateRangeSchema } from "@/lib/validations";
 
 const ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/archive";
 
 const cache = new Map<string, { data: unknown; timestamp: number }>();
-const CACHE_TTL = 60 * 60 * 1000; // 1 ora (dati storici cambiano raramente)
+const CACHE_TTL = 60 * 60 * 1000; // 1 ora
 
 function getCacheKey(
   lat: number,
@@ -16,27 +17,35 @@ function getCacheKey(
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const lat = searchParams.get("lat");
-  const lon = searchParams.get("lon");
-  const startDate = searchParams.get("start");
-  const endDate = searchParams.get("end");
 
-  if (!lat || !lon || !startDate || !endDate) {
+  // Validazione coordinate
+  const coordValidation = coordinatesSchema.safeParse({
+    lat: searchParams.get("lat"),
+    lon: searchParams.get("lon"),
+  });
+
+  if (!coordValidation.success) {
     return NextResponse.json(
-      { error: "Parametri lat, lon, start e end richiesti" },
+      { error: coordValidation.error.issues[0].message },
       { status: 400 },
     );
   }
 
-  const latitude = parseFloat(lat);
-  const longitude = parseFloat(lon);
+  // Validazione date
+  const dateValidation = dateRangeSchema.safeParse({
+    start: searchParams.get("start"),
+    end: searchParams.get("end"),
+  });
 
-  if (isNaN(latitude) || isNaN(longitude)) {
+  if (!dateValidation.success) {
     return NextResponse.json(
-      { error: "Coordinate non valide" },
+      { error: dateValidation.error.issues[0].message },
       { status: 400 },
     );
   }
+
+  const { lat: latitude, lon: longitude } = coordValidation.data;
+  const { start: startDate, end: endDate } = dateValidation.data;
 
   const cacheKey = getCacheKey(latitude, longitude, startDate, endDate);
   const cached = cache.get(cacheKey);

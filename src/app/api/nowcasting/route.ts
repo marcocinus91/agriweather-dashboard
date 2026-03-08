@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { coordinatesSchema } from "@/lib/validations";
 
 const OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast";
 
@@ -11,25 +12,21 @@ function getCacheKey(lat: number, lon: number): string {
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const lat = searchParams.get("lat");
-  const lon = searchParams.get("lon");
 
-  if (!lat || !lon) {
+  // Validazione input
+  const validation = coordinatesSchema.safeParse({
+    lat: searchParams.get("lat"),
+    lon: searchParams.get("lon"),
+  });
+
+  if (!validation.success) {
     return NextResponse.json(
-      { error: "Parametri lat e lon richiesti" },
+      { error: validation.error.issues[0].message },
       { status: 400 },
     );
   }
 
-  const latitude = parseFloat(lat);
-  const longitude = parseFloat(lon);
-
-  if (isNaN(latitude) || isNaN(longitude)) {
-    return NextResponse.json(
-      { error: "Coordinate non valide" },
-      { status: 400 },
-    );
-  }
+  const { lat: latitude, lon: longitude } = validation.data;
 
   const cacheKey = getCacheKey(latitude, longitude);
   const cached = cache.get(cacheKey);

@@ -1,37 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
+import { coordinatesSchema } from "@/lib/validations";
 
 const OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast";
 
-// Cache in memoria (in produzione useresti Redis/Vercel KV)
+// Cache semplice (nota: inefficace in serverless, ma meglio di niente per ora)
 const cache = new Map<string, { data: unknown; timestamp: number }>();
 const CACHE_TTL = 10 * 60 * 1000; // 10 minuti
 
 function getCacheKey(lat: number, lon: number): string {
-  // Arrotonda a 2 decimali per aumentare cache hits
   return `weather:${lat.toFixed(2)}:${lon.toFixed(2)}`;
 }
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const lat = searchParams.get("lat");
-  const lon = searchParams.get("lon");
 
-  if (!lat || !lon) {
+  // Validazione input
+  const validation = coordinatesSchema.safeParse({
+    lat: searchParams.get("lat"),
+    lon: searchParams.get("lon"),
+  });
+
+  if (!validation.success) {
     return NextResponse.json(
-      { error: "Parametri lat e lon richiesti" },
+      { error: validation.error.issues[0].message },
       { status: 400 },
     );
   }
 
-  const latitude = parseFloat(lat);
-  const longitude = parseFloat(lon);
-
-  if (isNaN(latitude) || isNaN(longitude)) {
-    return NextResponse.json(
-      { error: "Coordinate non valide" },
-      { status: 400 },
-    );
-  }
+  const { lat: latitude, lon: longitude } = validation.data;
 
   // Controlla cache
   const cacheKey = getCacheKey(latitude, longitude);
