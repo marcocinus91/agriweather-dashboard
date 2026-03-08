@@ -5,6 +5,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { SessionProvider } from "@/components/providers/SessionProvider";
 import { Toaster } from "sonner";
+import { LoginBanner } from "@/components/auth/LoginBanner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,12 +25,15 @@ export default function RootLayout({
         <SessionProvider>
           <QueryProvider>
             <Navbar />
+            <LoginBanner />
             {children}
             <Toaster
               position="bottom-right"
               richColors
               closeButton
-              toastOptions={{ duration: 3000 }}
+              toastOptions={{
+                duration: 3000,
+              }}
             />
           </QueryProvider>
         </SessionProvider>
