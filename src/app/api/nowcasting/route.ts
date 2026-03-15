@@ -3,13 +3,6 @@ import { coordinatesSchema } from "@/lib/validations";
 
 const OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast";
 
-const cache = new Map<string, { data: unknown; timestamp: number }>();
-const CACHE_TTL = 5 * 60 * 1000; // 5 minuti
-
-function getCacheKey(lat: number, lon: number): string {
-  return `nowcast:${lat.toFixed(2)}:${lon.toFixed(2)}`;
-}
-
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
 
@@ -22,20 +15,11 @@ export async function GET(request: NextRequest) {
   if (!validation.success) {
     return NextResponse.json(
       { error: validation.error.issues[0].message },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
   const { lat: latitude, lon: longitude } = validation.data;
-
-  const cacheKey = getCacheKey(latitude, longitude);
-  const cached = cache.get(cacheKey);
-
-  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-    return NextResponse.json(cached.data, {
-      headers: { "X-Cache": "HIT" },
-    });
-  }
 
   try {
     const params = new URLSearchParams({
@@ -46,7 +30,9 @@ export async function GET(request: NextRequest) {
       timezone: "auto",
     });
 
-    const response = await fetch(`${OPEN_METEO_URL}?${params}`);
+    const response = await fetch(`${OPEN_METEO_URL}?${params}`, {
+      next: { revalidate: 300 }, // Cache Next.js: 5 minuti
+    });
 
     if (!response.ok) {
       throw new Error(`Open-Meteo error: ${response.status}`);
@@ -54,16 +40,12 @@ export async function GET(request: NextRequest) {
 
     const data = await response.json();
 
-    cache.set(cacheKey, { data, timestamp: Date.now() });
-
-    return NextResponse.json(data, {
-      headers: { "X-Cache": "MISS" },
-    });
+    return NextResponse.json(data);
   } catch (error) {
     console.error("Nowcasting API error:", error);
     return NextResponse.json(
       { error: "Errore nel recupero dati nowcasting" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
