@@ -14,14 +14,15 @@ export async function getHistoricalData(
   latitude: number,
   longitude: number,
   startDate: string,
-  endDate: string,
+  endDate: string
 ): Promise<HistoricalResponse> {
   const response = await fetch(
-    `/api/historical?lat=${latitude}&lon=${longitude}&start=${startDate}&end=${endDate}`,
+    `/api/historical?lat=${latitude}&lon=${longitude}&start=${startDate}&end=${endDate}`
   );
 
   if (!response.ok) {
-    throw new Error(`Errore API Historical: ${response.status}`);
+    const error = await response.json();
+    throw new Error(error.error || `Errore API Historical: ${response.status}`);
   }
 
   return response.json();
@@ -30,21 +31,30 @@ export async function getHistoricalData(
 export async function getSeasonalGDDData(
   latitude: number,
   longitude: number,
-  seasonStartDate: string,
+  seasonStartDate: string
 ): Promise<HistoricalResponse> {
   const today = new Date();
+  // Open-Meteo Archive ha un ritardo di ~5 giorni
+  today.setDate(today.getDate() - 5);
   const endDate = today.toISOString().split("T")[0];
+
+  // Verifica che start sia prima di end
+  const start = new Date(seasonStartDate);
+  if (start >= today) {
+    throw new Error("Data inizio stagione nel futuro");
+  }
 
   return getHistoricalData(latitude, longitude, seasonStartDate, endDate);
 }
 
 export async function getChillingSeasonData(
   latitude: number,
-  longitude: number,
+  longitude: number
 ): Promise<HistoricalResponse> {
   const today = new Date();
-  const year =
-    today.getMonth() >= 9 ? today.getFullYear() : today.getFullYear() - 1;
+  today.setDate(today.getDate() - 5);
+  
+  const year = today.getMonth() >= 9 ? today.getFullYear() : today.getFullYear() - 1;
   const startDate = `${year}-10-01`;
   const endDate = today.toISOString().split("T")[0];
 
@@ -54,7 +64,7 @@ export async function getChillingSeasonData(
 export async function getLastYearComparison(
   latitude: number,
   longitude: number,
-  daysBack: number = 30,
+  daysBack: number = 30
 ): Promise<HistoricalResponse> {
   const today = new Date();
   const lastYearEnd = new Date(today);
@@ -67,6 +77,6 @@ export async function getLastYearComparison(
     latitude,
     longitude,
     lastYearStart.toISOString().split("T")[0],
-    lastYearEnd.toISOString().split("T")[0],
+    lastYearEnd.toISOString().split("T")[0]
   );
 }
